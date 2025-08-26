@@ -1,0 +1,3159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>てらこや公式サイト</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* タッチ操作の最適化 */
+        button, a, .nav-menu li {
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* スクロールの改善 */
+        html {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fef9f3;
+        }
+
+        /* ページ読み込み時に閲覧数をカウント */
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* ヘッダー・ナビゲーション */
+        header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Noto Sans JP', sans-serif;
+            white-space: nowrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            gap: 0.8rem;
+            align-items: flex-start;
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 154, 158, 0.95);
+            padding: 1.5rem 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-align: left;
+            letter-spacing: 0.3px;
+            display: block;
+            width: 100%;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* メインコンテンツ */
+        main {
+            margin-top: 80px;
+        }
+
+        section {
+            padding: 4rem 0;
+            margin: 2rem 0;
+        }
+
+        .section-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ff6b9d;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* 学年別人数表示 */
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .grade-card {
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .grade-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .grade-card h3 {
+            font-size: 1.5rem;
+            color: #2d3436;
+            margin-bottom: 1rem;
+        }
+
+        .grade-card .number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #e17055;
+        }
+
+        /* クラブ紹介 */
+        .club-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .club-card {
+            background: linear-gradient(135deg, #a29bfe, #fd79a8);
+            color: #fff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .club-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .club-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .club-card .member-count {
+            background-color: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* お知らせ */
+        .news-item {
+            background: #fff;
+            border-left: 5px solid #ff6b9d;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .news-date {
+            color: #74b9ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            color: #2d3436;
+        }
+
+        /* フォーム */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b9d;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: #fff;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* フッター */
+        footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+                padding: 80px 1rem 2rem 1rem;
+                border-radius: 0;
+                transform: none;
+                transition: right 0.3s ease;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: flex-start;
+                overflow-y: auto;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-menu li {
+                width: 100%;
+            }
+
+            .nav-menu a {
+                font-size: 1rem;
+                padding: 1rem;
+                width: 100%;
+                text-align: left;
+                border: 2px solid rgba(255,255,255,0.3);
+                border-radius: 10px !important;
+                background: rgba(255,255,255,0.9);
+                color: #2d3436;
+                margin-bottom: 0.5rem;
+            }
+
+            .nav-menu a:hover, .nav-menu a.active {
+                background: linear-gradient(135deg, #e17055, #d63031);
+                color: #fff;
+                border-color: #d63031;
+                transform: none;
+            }
+
+
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .logo span:first-child {
+                font-size: 1.8rem !important;
+            }
+
+            .hero {
+                padding: 4rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .grade-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .club-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* ゲームボタンのサイズ調整 */
+            #janken-game .nav-menu div:last-child {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            #janken-game button {
+                padding: 0.8rem;
+                font-size: 2.5rem;
+            }
+
+            /* アクセス情報を縦並びに */
+            #access .section-card > div {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            /* フォームの調整 */
+            .contact-form {
+                padding: 0 1rem;
+            }
+
+            /* テキストサイズの調整 */
+            .hero h1, .section-title {
+                line-height: 1.2;
+            }
+
+            /* ボタンのタッチ操作改善 */
+            button, .nav-menu a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .section-card {
+                padding: 1rem;
+            }
+
+            .grade-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* ゲームの調整 */
+            #janken-game button {
+                font-size: 2rem;
+                padding: 0.6rem;
+            }
+
+            #player-choice, #computer-choice {
+                font-size: 3rem !important;
+                min-width: 60px;
+                padding: 0.5rem;
+            }
+
+            /* モバイル用タブナビゲーションの調整 */
+            .nav-menu a {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+
+        /* 全セクションを縦に配置表示 */
+        .section {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span style="font-size: 2.2rem;">🏫</span>
+                    <span>てらこや</span>
+                </div>
+                <div class="hamburger" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#" onclick="showSection('home')">ホーム</a></li>
+                    <li><a href="#" onclick="showSection('students')">年間人数紹介</a></li>
+                    <li><a href="#" onclick="showSection('overview')">学校の概要</a></li>
+                    <li><a href="#" onclick="showSection('clubs')">クラブ紹介</a></li>
+                    <li><a href="#" onclick="showSection('daily')">一日の流れ</a></li>
+                    <li><a href="#" onclick="showSection('quiz')">📚 今日のクイズ</a></li>
+                    <li><a href="#" onclick="showSection('values')">大事にしてること</a></li>
+                    <li><a href="#" onclick="showSection('events')">年間行事</a></li>
+                    <li><a href="#" onclick="showSection('news')">お知らせ</a></li>
+                    <li><a href="#" onclick="showSection('visit')">見学について</a></li>
+                    <li><a href="#" onclick="showSection('blog')">ブログ</a></li>
+                    <li><a href="#" onclick="showSection('game')">ゲーム</a></li>
+                    <li><a href="#" onclick="showSection('access')">アクセス情報</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- ホーム（トップページ） -->
+        <section id="home" class="section">
+            <div class="hero">
+                <div class="container">
+                    <h1>🌟 ようこそ、てらこやへ！ 🌟</h1>
+                    <p>みんなで学び、みんなで育つ場所</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🏠 てらこやについて</h2>
+                    <p style="text-align: center; font-size: 1.2rem; color: #636e72;">
+                        てらこやは勉強というより自分がやりたいことを思う存分できるところです。<br>
+                        クラブ活動はもちろん、普通に外でスポーツしたりもできます。<br>
+                        新しい友達と出会い、たくさんの経験ができます。✨
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 年間人数紹介 -->
+        <section id="students" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">📊 2025年度 在籍児童数</h2>
+                    <div class="grade-grid">
+                        <div class="grade-card">
+                            <h3>1年生</h3>
+                            <div class="number">3人</div>
+                        </div>
+                        <div class="grade-card">
+                            <h3>2年生</h3>
+                            <div class="number">4人</div>
+                        </div>
+                        <div class="grade-card">
+                            <h3>3年生</h3>
+                            <div class="number">4人</div>
+                        </div>
+                        <div class="grade-card">
+                            <h3>4年生</h3>
+                            <div class="number">3人</div>
+                        </div>
+                        <div class="grade-card">
+                            <h3>5年生</h3>
+                            <div class="number">6人</div>
+                        </div>
+                        <div class="grade-card">
+                            <h3>6年生</h3>
+                            <div class="number">4人</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <p style="font-size: 1.5rem; font-weight: 600; color: #e17055;">
+                            🎉 合計：24人のお友達が一緒に学んでいます！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学校の概要 -->
+        <section id="overview" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">📋 学校の概要</h2>
+                    <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem; color: #636e72;">
+                        てらこやの基本情報をまとめました。ご入学をお考えの方はぜひご覧ください✨
+                    </p>
+                    
+                    <div style="display: grid; gap: 2rem;">
+                        <!-- 対象・定員 -->
+                        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
+                                👥 対象・定員
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem;">対象年齢</div>
+                                    <div style="font-size: 1.1rem;">小学１年〜６年</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem;">（縦割り混合クラス）</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem;">定員</div>
+                                    <div style="font-size: 2rem; font-weight: 700;">24名</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 費用 -->
+                        <div style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
+                                💰 費用
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
+                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">入学金</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700;">50,000円＋税</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
+                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">月謝</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">40,000円＋税</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.9;">（昼食費込）</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
+                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">兄弟割引</div>
+                                    <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">10,000円減額</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.9;">兄弟がいる場合</div>
+                                </div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; margin-top: 1.5rem;">
+                                <div style="font-size: 1rem; line-height: 1.6;">
+                                    <strong>💡 月謝の特別制度</strong><br>
+                                    月謝は提供できるものでの支払いも可能です<br>
+                                    （専門分野の講師として、食材や教材の提供、サポートスタッフとしてなど）
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 休み -->
+                        <div style="background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; padding: 2.5rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
+                                📅 休日・休み
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">平日</div>
+                                    <div style="font-size: 1rem;">土・日・祝祭日</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">夏休み</div>
+                                    <div style="font-size: 0.95rem;">7月下旬〜8月末</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">冬休み</div>
+                                    <div style="font-size: 0.95rem;">12月下旬〜1月上旬</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">春休み</div>
+                                    <div style="font-size: 0.95rem;">3月下旬〜4月上旬</div>
+                                </div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin-top: 1.5rem; text-align: center;">
+                                <div style="font-size: 0.95rem;">※ 一般小学校の休みに準じます</div>
+                            </div>
+                        </div>
+
+                        <!-- その他重要事項 -->
+                        <div style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2.5rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
+                                ⚠️ その他重要事項
+                            </h3>
+                            
+                            <div style="display: grid; gap: 1.5rem;">
+                                <div style="background: rgba(255,255,255,0.15); padding: 2rem; border-radius: 15px;">
+                                    <h4 style="font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                        🔥 体験中心の非形式的教育
+                                    </h4>
+                                    <p style="line-height: 1.6; margin-bottom: 1rem;">
+                                        てらこやで行われる活動は、非形式的教育といわれるもので、体験を中心としたものです。
+                                        子どもたちの大きな喜びになる自由な行動は、できる限り保障したいと考えています。
+                                    </p>
+                                    <p style="line-height: 1.6; margin-bottom: 1rem;">
+                                        火をたいたり、刃物を使って料理や工作をしたりもしますので、擦り傷切り傷などもあるかもしれません。
+                                        もちろんスタッフは安全に関しての細心の注意を払いますが、てらこやの趣旨をご理解の上、ご了承ください。
+                                    </p>
+                                    <p style="line-height: 1.6;">
+                                        万が一、事故など起きた場合には応急処置をし、適切な医療機関へと取り次ぎます。
+                                        （障害保険にも全員加入します）
+                                    </p>
+                                </div>
+                                
+                                <div style="background: rgba(255,255,255,0.15); padding: 2rem; border-radius: 15px;">
+                                    <h4 style="font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                        📋 年間行事について
+                                    </h4>
+                                    <p style="line-height: 1.6;">
+                                        あらかじめ決めた年間行事は特にありません。
+                                        子どもたちの主体的な動機があれば、随時話し合って行います。
+                                    </p>
+                                </div>
+                                
+                                <div style="background: rgba(255,255,255,0.15); padding: 2rem; border-radius: 15px;">
+                                    <h4 style="font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                        🚫 持ち込み禁止物
+                                    </h4>
+                                    <p style="line-height: 1.6;">
+                                        おもちゃ、コンピュータゲーム、お菓子などは持ってこないでください。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- クラブ紹介 -->
+        <section id="clubs" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🎯 クラブ紹介</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: #636e72;">
+                        クラブは自分が入りたいと思ったら入る、入りたくないと思った人は入らない、自由参加です！✨
+                    </p>
+                    <div class="club-grid">
+                        <div class="club-card">
+                            <h3>🎴 百人一首クラブ</h3>
+                            <div class="member-count">10人参加中</div>
+                            <p>日本の伝統的な百人一首を通して、言葉の美しさや歴史を学びます。みんなで競技かるたにも挑戦しています！</p>
+                        </div>
+                        <div class="club-card">
+                            <h3>🌍 英語クラブ</h3>
+                            <div class="member-count">初級〜上級レベル</div>
+                            <p>英語に触れたい子どもたちのためのクラブです。歌やゲーム、会話練習、読み書きなど、それぞれのレベルに合わせて楽しく英語を学びます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 一日の流れ -->
+        <section id="daily" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🌅 一日の流れ</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; color: #636e72;">
+                        てらこやでの一日はどんなふうに過ごすのかな？みんなで作る特別な時間です✨
+                    </p>
+                    
+                    <div style="display: grid; gap: 2rem;">
+                        <!-- 朝のミーティング -->
+                        <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); padding: 2.5rem; border-radius: 20px; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 20px; background: #e17055; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">朝</div>
+                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🌅 朝のミーティング
+                            </h3>
+                            <p style="color: #2d3436; line-height: 1.7; font-size: 1.1rem;">
+                                一日のプランを自分で決めて、デザインし、言葉にし、みなで聴きあい、そして話しあう大切な時間。<br>
+                                みなに聴いてほしいこと、困っていることも、シェアし、話し合う時間です。
+                            </p>
+                        </div>
+
+                        <!-- プランの時間 -->
+                        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 20px; background: #00b894; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">午前〜午後</div>
+                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🎯 プランの時間
+                            </h3>
+                            <p style="line-height: 1.7; font-size: 1.1rem; margin-bottom: 1.5rem;">
+                                基本的にやりたいことを選んで決めてやる時間です。
+                            </p>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
+                                    <h4 style="margin-bottom: 1rem; font-size: 1.3rem;">👦👧 子どもからのプラン</h4>
+                                    <p style="line-height: 1.6; opacity: 0.95;">
+                                        １日のプラン、数日のプラン、長期的なプロジェクト（たとえば小屋つくり）など
+                                    </p>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
+                                    <h4 style="margin-bottom: 1rem; font-size: 1.3rem;">👨‍🏫 スタッフプラン</h4>
+                                    <p style="line-height: 1.6; opacity: 0.95; margin-bottom: 1rem;">
+                                        子どもからでるプラン以外に子どもの興味関心、年齢や発達に応じた内容を提案し、子どもと話し合って決めます。
+                                    </p>
+                                    <div style="opacity: 0.9; font-size: 0.95rem;">
+                                        <strong>室内活動：</strong>家づくり、手芸、工作、音楽、運動、実験、アート、劇、料理、農作業<br>
+                                        <strong>外出活動：</strong>旅、キャンプ、山、海、川、釣り、サイクリング<br>
+                                        <strong>その他：</strong>様々な分野の達人や体験の授業
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 昼食 -->
+                        <div style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 20px; background: #fd79a8; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">お昼</div>
+                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🍚 昼食
+                            </h3>
+                            <p style="line-height: 1.7; font-size: 1.1rem;">
+                                自分たちで育てた米や野菜をなるべく使った和食中心の料理。<br>
+                                自分たちで収穫し、ときには料理する体験を大切にします。
+                            </p>
+                        </div>
+
+                        <!-- 清掃、さよならミーティング -->
+                        <div style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 20px; background: #e84393; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">夕方</div>
+                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🧹 清掃・さよならミーティング
+                            </h3>
+                            <p style="line-height: 1.7; font-size: 1.1rem;">
+                                一日を振り返り、文字や言葉にし、聴きあう時間。<br>
+                                一日の中で困ったこと、哀しかったこと、うれしかったことをシェアし、話し合う時間です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- てらこやで大事にしてること -->
+        <section id="values" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">💎 てらこやで大事にしてること</h2>
+                    <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem; color: #636e72;">
+                        てらこやが大切にしている５つの価値観をご紹介します✨
+                    </p>
+                    
+                    <div style="display: grid; gap: 2.5rem;">
+                        <!-- 主体性の尊重 -->
+                        <div style="background: linear-gradient(135deg, #ff9a9e, #fecfef); padding: 3rem; border-radius: 25px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: -10px; right: -10px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 2rem; display: flex; align-items: center; gap: 0.7rem;">
+                                🌟 主体性の尊重
+                            </h3>
+                            <div style="background: rgba(255,255,255,0.8); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border-left: 5px solid #e17055;">
+                                <p style="color: #2d3436; font-style: italic; font-size: 1.1rem; line-height: 1.6; margin-bottom: 0.5rem;">
+                                    「やりたい」と思う気持ちと行動が一致したとき、人はいちばん成長する
+                                </p>
+                                <p style="color: #636e72; font-size: 0.95rem; text-align: right;">by C.ロジャース</p>
+                            </div>
+                            <div style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">
+                                <p style="margin-bottom: 1rem;">一人一人が尊重され「自分のやりたいことを決めてやる」ことを大切にします。</p>
+                                <p style="margin-bottom: 1rem;">今、自分はどうありたいのか、どう感じているのかをいつも感じて過ごします。</p>
+                                <p style="margin-bottom: 1rem;">そのことを批判されたり、評価されたりすることなく、ありのままの自分を認めること、ありのままの相手を受け入れることを大切にします。</p>
+                                <p style="margin-bottom: 1rem;">自分で考え、決めて、実現していく力を育みます。</p>
+                                <p>自分の想いをいろいろな状況、他者の想いや環境の中で、どういう風に折り合いをつけていくのか、調和して生きるということを日々の体験の中で学んでいきます。</p>
+                            </div>
+                        </div>
+
+                        <!-- 話し合いによる解決 -->
+                        <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); padding: 3rem; border-radius: 25px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: -10px; left: -10px; width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 50%;"></div>
+                            <h3 style="color: #2d3436; margin-bottom: 2rem; font-size: 2rem; display: flex; align-items: center; gap: 0.7rem;">
+                                💬 話し合いによる解決
+                            </h3>
+                            <div style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">
+                                <p style="margin-bottom: 1rem;">一日の時間割やプランは話し合いによって決めます。</p>
+                                <p style="margin-bottom: 1rem;">やりたいこと、困っていることを話し合いによって進めていったり、解決したりします。</p>
+                                <p style="margin-bottom: 1rem;">自分の気持ちを丁寧につたえること、相手の気持ちに耳を澄ますことを大事にします。</p>
+                                <p>その日々の積み重ねの中から協調性やコミュニケーションの能力を身につけていきます。</p>
+                            </div>
+                        </div>
+
+                        <!-- 自然とともに暮らす -->
+                        <div style="background: linear-gradient(135deg, #d299c2, #fef9d7); padding: 3rem; border-radius: 25px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; bottom: -15px; right: -15px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <h3 style="color: #2d3436; margin-bottom: 2rem; font-size: 2rem; display: flex; align-items: center; gap: 0.7rem;">
+                                🌿 自然とともに暮らす
+                            </h3>
+                            <div style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">
+                                <p style="margin-bottom: 1rem;">自然と一体となった暮らしをともに過ごします。</p>
+                                <p style="margin-bottom: 1rem;">火、水、土・・・、自然との触れ合いや体験を通して、五感を澄まし、創造力を育みます。</p>
+                                <p style="margin-bottom: 1rem;">山、川、海、田畑、木々や生き物たちを身近に感じながら、自然と調和して生きることを育みます。</p>
+                                <p>その中で食べものを育て、料理し、いのちのつながりを感じて過ごします。</p>
+                            </div>
+                        </div>
+
+                        <!-- 学びかたを学ぶ -->
+                        <div style="background: linear-gradient(135deg, #89f7fe, #66a6ff); color: #fff; padding: 3rem; border-radius: 25px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: 20px; right: 20px; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%;"></div>
+                            <h3 style="margin-bottom: 2rem; font-size: 2rem; display: flex; align-items: center; gap: 0.7rem;">
+                                📚 学びかたを学ぶ
+                            </h3>
+                            <div style="line-height: 1.8; font-size: 1.1rem;">
+                                <p style="margin-bottom: 1rem;">やりたいことを実現するために、必要性から学びます。</p>
+                                <p style="margin-bottom: 1rem;">なぜ？どうして？の興味や疑問から学びます。</p>
+                                <p style="margin-bottom: 1rem;">智慧を大事にし、そのために必要な知識を学びます。</p>
+                                <p style="margin-bottom: 1rem;">学べる人や場所を一緒に探します。</p>
+                                <p>学べる場所へどんどん出ていきます。</p>
+                            </div>
+                        </div>
+
+                        <!-- 自分自身でいること -->
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 3rem; border-radius: 25px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; bottom: 10px; left: 10px; width: 90px; height: 90px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <h3 style="margin-bottom: 2rem; font-size: 2rem; display: flex; align-items: center; gap: 0.7rem;">
+                                🤗 自分自身でいること
+                            </h3>
+                            <div style="line-height: 1.8; font-size: 1.1rem;">
+                                <p style="margin-bottom: 1rem;">子どもも大人も自分自身でいられる場を目指します。</p>
+                                <p>そうあるために、スタッフも親御さんも子どもたちと一緒に育ちあいましょう。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 年間行事 -->
+        <section id="events" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🎭 2025年年間行事</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: #636e72;">
+                        てらこやでは毎年楽しい行事がたくさんあります！みんなで素敵な思い出を作りましょう✨
+                    </p>
+                    <div class="events-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                        <div class="event-card" style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease;">
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🏕️ キャンプ</h3>
+                            <p style="line-height: 1.6;">
+                                自然の中でテント泊や野外活動を楽しみます。キャンプファイヤーや星空観察など、普段できない体験がいっぱい！
+                            </p>
+                        </div>
+                        <div class="event-card" style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease;">
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🏊‍♂️ 遠泳</h3>
+                            <div style="background-color: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; font-weight: 600;">夏開催</div>
+                            <p style="line-height: 1.6;">
+                                基本1.5kmの遠泳にチャレンジします。往復にチャレンジしたい人は3kmコースもあります。海での泳力向上と挑戦する気持ちを育てます！
+                            </p>
+                        </div>
+                        <div class="event-card" style="background: linear-gradient(135deg, #55a3ff, #003d82); color: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease;">
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🚶‍♂️ 萩往還</h3>
+                            <p style="line-height: 1.6;">
+                                歴史ある萩往還を歩く伝統行事です。みんなで助け合いながら長い道のりを歩き、達成感を味わいます。
+                            </p>
+                        </div>
+                        <div class="event-card" style="background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease;">
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">✈️ 修学旅行</h3>
+                            <div style="background-color: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; font-weight: 600;">5・6年生対象</div>
+                            <p style="line-height: 1.6;">
+                                5・6年生が参加する特別な旅行です。普段見ることのできない場所を訪れ、学年の絆を深めます。
+                            </p>
+                        </div>
+                        <div class="event-card" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease;">
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">❄️ 雪山キャンプ</h3>
+                            <div style="background-color: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; font-weight: 600;">冬開催</div>
+                            <p style="line-height: 1.6;">
+                                雪山での特別なキャンプ体験です。雪遊びやスキー、雪だるま作りなど冬ならではの活動を楽しみます。寒さに負けない強い心を育てます！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- お知らせ -->
+        <section id="news" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">📢 お知らせ</h2>
+                    <div id="news-items-container">
+                        <!-- お知らせがここに動的に挿入されます -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 見学について -->
+        <section id="visit" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">👀 見学希望の方へ</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; color: #636e72;">
+                        てらこやの見学はいつでも大歓迎です！お気軽にお越しください✨
+                    </p>
+                    
+                    <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                        <h3 style="color: #2d3436; margin-bottom: 1rem; font-size: 1.5rem;">📅 見学について</h3>
+                        <p style="color: #2d3436; line-height: 1.7; font-size: 1.1rem;">
+                            見学は、<strong>いつでも可能</strong>です。<br>
+                            プランにより、外出してる場合も多いので、<strong>前もってご相談ください。</strong>
+                        </p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2rem; border-radius: 15px; text-align: center;">
+                            <h4 style="font-size: 1.3rem; margin-bottom: 1rem;">👨‍👩‍👧‍👦 大人</h4>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">3,000円</div>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">（食費込み）</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; padding: 2rem; border-radius: 15px; text-align: center;">
+                            <h4 style="font-size: 1.3rem; margin-bottom: 1rem;">🧒 小学生以下</h4>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">1,000円</div>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">（食費込み）</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2rem; border-radius: 15px; text-align: center;">
+                            <h4 style="font-size: 1.3rem; margin-bottom: 1rem;">🛏️ 宿泊</h4>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">1,000円</div>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">一人あたり</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2rem; border-radius: 15px; text-align: center;">
+                            <h4 style="font-size: 1.3rem; margin-bottom: 1rem;">🌟 一日体験</h4>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">2,500円</div>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">入学希望の子</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin-top: 2rem; border-left: 5px solid #00b894;">
+                        <h3 style="color: #2d3436; margin-bottom: 1rem; font-size: 1.3rem;">📞 見学のお申し込み</h3>
+                        <p style="color: #636e72; line-height: 1.7;">
+                            見学をご希望の方は、事前にお電話またはメールでご連絡ください。<br>
+                            スタッフが丁寧にご案内いたします。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        <!-- ブログ -->
+        <section id="blog" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">📝 てらこやブログ</h2>
+                    <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem; color: #636e72;">
+                        日々のてらこやの様子や子どもたちの成長をお伝えします✨
+                    </p>
+                    
+                    <!-- ブログ内容 -->
+                    <div id="blog-content" style="display: grid; gap: 2rem;">
+                        <!-- 表示切り替えタブ（管理者のみ表示） -->
+                        <div id="admin-tabs" style="display: none; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+                            <button onclick="showPublishedPosts()" id="published-tab" style="padding: 0.8rem 2rem; background: linear-gradient(135deg, #e17055, #d63031); color: #fff; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                                📖 公開済み記事
+                            </button>
+                            <button onclick="showDraftPosts()" id="draft-tab" style="padding: 0.8rem 2rem; background: #ddd; color: #636e72; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                                📝 下書き
+                            </button>
+                        </div>
+
+                        <!-- 公開済み記事一覧 -->
+                        <div id="published-posts" style="display: block;">
+                            <div style="text-align: center; padding: 3rem; color: #636e72;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                                <p style="font-size: 1.2rem;">まだ記事がありません</p>
+                                <p>記事を投稿すると、ここに表示されます</p>
+                            </div>
+                        </div>
+
+                        <!-- 下書き記事一覧（管理者のみ表示） -->
+                        <div id="draft-posts" style="display: none;">
+                            <div style="text-align: center; padding: 3rem; color: #636e72;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                                <p style="font-size: 1.2rem;">下書きはまだありません</p>
+                                <p>記事を下書きとして保存すると、ここに表示されます</p>
+                            </div>
+                        </div>
+
+                        <!-- 記事投稿機能（管理者のみ表示） -->
+                        <div id="admin-post-form" style="display: none; background: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px dashed #e17055;">
+                            <h3 style="color: #2d3436; font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center;">✍️ 新しい記事を投稿</h3>
+                            <form id="blog-form" style="display: grid; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3436;">記事タイトル</label>
+                                    <input type="text" id="blog-title" placeholder="今日の出来事を入力してください" style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3436;">カテゴリー</label>
+                                    <select id="blog-category" style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                                        <option>日常の様子</option>
+                                        <option>体験レポート</option>
+                                        <option>プロジェクト</option>
+                                        <option>クラブ活動</option>
+                                        <option>行事</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3436;">記事内容</label>
+                                    <textarea rows="4" id="blog-content" placeholder="今日あった素敵な出来事や子どもたちの様子を書いてください..." style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+                                </div>
+                                <div style="display: flex; gap: 1rem; justify-content: center;">
+                                    <button type="button" onclick="saveDraft()" style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                        💾 下書き保存
+                                    </button>
+                                    <button type="button" onclick="publishPost()" style="background: linear-gradient(135deg, #e17055, #d63031); color: #fff; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                        📝 記事を公開
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 管理者モード表示（URLパラメータで制御） -->
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <button onclick="toggleAdminMode()" id="admin-toggle" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; opacity: 0.7; transition: all 0.3s; display: none;">
+                                🔐 管理者モード
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ゲーム -->
+        <section id="game" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🎮 じゃんけんゲーム</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; color: #636e72;">
+                        てらこやの仲間と一緒にじゃんけんで遊ぼう！✊✋✌️
+                    </p>
+                    
+                    <div id="janken-game" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                        <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
+                            <h3 style="color: #2d3436; margin-bottom: 1rem;">🤖 コンピューターと対戦</h3>
+                            <div id="game-result" style="font-size: 1.5rem; margin: 1rem 0; min-height: 50px; color: #2d3436;"></div>
+                            
+                            <div style="display: flex; justify-content: center; gap: 1rem; margin: 2rem 0;">
+                                <div id="player-choice" style="font-size: 4rem; background: #fff; padding: 1rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-width: 80px;">❓</div>
+                                <div style="font-size: 3rem; padding: 1rem; display: flex; align-items: center;">VS</div>
+                                <div id="computer-choice" style="font-size: 4rem; background: #fff; padding: 1rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-width: 80px;">❓</div>
+                            </div>
+                            
+                            <div style="margin: 2rem 0;">
+                                <p style="color: #2d3436; margin-bottom: 1rem; font-weight: 600;">あなたの手を選んでね！</p>
+                                <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button onclick="playJanken('rock')" style="font-size: 3rem; padding: 1rem; background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; border: none; border-radius: 15px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✊</button>
+                                    <button onclick="playJanken('paper')" style="font-size: 3rem; padding: 1rem; background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; border: none; border-radius: 15px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✋</button>
+                                    <button onclick="playJanken('scissors')" style="font-size: 3rem; padding: 1rem; background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; border: none; border-radius: 15px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✌️</button>
+                                </div>
+                                <div style="margin-top: 1rem; color: #636e72;">
+                                    <small>✊ グー　✋ パー　✌️ チョキ</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 1rem;">📊 スコア</h3>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                                <div>
+                                    <div style="font-size: 2rem; font-weight: 700;" id="win-count">0</div>
+                                    <div style="opacity: 0.9;">勝ち</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 2rem; font-weight: 700;" id="draw-count">0</div>
+                                    <div style="opacity: 0.9;">あいこ</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 2rem; font-weight: 700;" id="lose-count">0</div>
+                                    <div style="opacity: 0.9;">負け</div>
+                                </div>
+                            </div>
+                            <button onclick="resetScore()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: rgba(255,255,255,0.2); color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">スコアリセット</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 今日のてらこやクイズ -->
+        <section id="quiz" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">📚 今日のてらこやクイズ</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; color: #636e72;">
+                        楽しいクイズで、てらこやのことをもっと知ろう！✨
+                    </p>
+                    
+                    
+                    <!-- ログイン時のクイズ内容 -->
+                    <div id="quiz-content">
+                        <div class="quiz-container" style="max-width: 600px; margin: 0 auto; text-align: center;">
+                        <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); padding: 2.5rem; border-radius: 20px; margin-bottom: 2rem;">
+                            <div id="quiz-question" class="quiz-question" style="font-size: 1.3rem; font-weight: 500; color: #2d3436; margin-bottom: 2rem; line-height: 1.8;">
+                                クイズを読み込み中...
+                            </div>
+                            <div id="quiz-options" class="quiz-options" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                                <!-- クイズの選択肢がここに表示されます -->
+                            </div>
+                            <div id="quiz-result" class="quiz-result" style="font-size: 1.1rem; font-weight: 500; padding: 1.5rem; border-radius: 15px; margin-top: 1.5rem; display: none;">
+                                <!-- クイズの結果がここに表示されます -->
+                            </div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 2rem; border-radius: 20px;">
+                            <h3 style="margin-bottom: 1rem;">📊 クイズ成績</h3>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: center;">
+                                <div>
+                                    <div style="font-size: 2rem; font-weight: 700;" id="quiz-correct-count">0</div>
+                                    <div style="opacity: 0.9;">正解</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 2rem; font-weight: 700;" id="quiz-total-count">0</div>
+                                    <div style="opacity: 0.9;">挑戦</div>
+                                </div>
+                            </div>
+                            <button onclick="resetQuizScore()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: rgba(255,255,255,0.2); color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">記録リセット</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- アクセス情報 -->
+        <section id="access" class="section">
+            <div class="container">
+                <div class="section-card">
+                    <h2 class="section-title">🗺️ アクセス情報</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                        <div>
+                            <h3 style="color: #ff6b9d; margin-bottom: 1rem;">📍 住所・連絡先</h3>
+                            <p style="margin-bottom: 1rem; line-height: 1.8;">
+                                オルタナティブスクール　てらこや<br>
+                                〒742-1105　山口県熊毛郡平生町大野北1177<br><br>
+                                📞 TEL: 03-1234-5678<br>
+                                📧 Email: info@terakoya.com
+                            </p>
+                            <h3 style="color: #ff6b9d; margin: 2rem 0 1rem 0;">🚃 交通アクセス</h3>
+                            <p style="line-height: 1.8;">
+                                • JR山手線「品川駅」徒歩8分<br>
+                                • 京急本線「品川駅」徒歩10分<br>
+                                • 都営バス「てらこや前」バス停徒歩1分
+                            </p>
+                        </div>
+                        <div>
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d423713.64394563984!2d131.57103535!3d33.93436720000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35451726a4c19983%3A0x7a30d670a5585a8f!2z44GT44Oz44Go44Gu44GK44GG44Gh44GI44KTJuOCquODq-OCv-ODiuODhuOCo-ODluOCueOCr-ODvOODq-WcsOeQg-WtkOiIju-8iOOBpuOCieOBk-OChA!5e0!3m2!1sja!2sjp!4v1753485526349!5m2!1sja!2sjp" 
+                                width="100%" 
+                                height="300" 
+                                style="border:0; border-radius: 10px;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 てらこや公式サイト. All rights reserved. 🌈</p>
+        </div>
+    </footer>
+
+    <script>
+
+        function toggleMenu() {
+            const navMenu = document.querySelector('.nav-menu');
+            const hamburger = document.querySelector('.hamburger');
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        // メニューの外側をクリックしたときにメニューを閉じる
+        document.addEventListener('click', function(event) {
+            const navMenu = document.querySelector('.nav-menu');
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('nav');
+            
+            if (!nav.contains(event.target) && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        // じゃんけんゲーム
+        let wins = 0;
+        let draws = 0;
+        let losses = 0;
+
+        function playJanken(playerChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            
+            const emojis = {
+                'rock': '✊',
+                'paper': '✋',
+                'scissors': '✌️'
+            };
+            
+            // 選択を表示
+            document.getElementById('player-choice').textContent = emojis[playerChoice];
+            document.getElementById('computer-choice').textContent = emojis[computerChoice];
+            
+            // 結果判定
+            let result = '';
+            if (playerChoice === computerChoice) {
+                result = '🤝 あいこです！';
+                draws++;
+                document.getElementById('draw-count').textContent = draws;
+            } else if (
+                (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                (playerChoice === 'paper' && computerChoice === 'rock') ||
+                (playerChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                result = '🎉 あなたの勝ちです！';
+                wins++;
+                document.getElementById('win-count').textContent = wins;
+            } else {
+                result = '😅 あなたの負けです！';
+                losses++;
+                document.getElementById('lose-count').textContent = losses;
+            }
+            
+            document.getElementById('game-result').textContent = result;
+        }
+
+        function resetScore() {
+            wins = 0;
+            draws = 0;
+            losses = 0;
+            document.getElementById('win-count').textContent = '0';
+            document.getElementById('draw-count').textContent = '0';
+            document.getElementById('lose-count').textContent = '0';
+            document.getElementById('game-result').textContent = '';
+            document.getElementById('player-choice').textContent = '❓';
+            document.getElementById('computer-choice').textContent = '❓';
+        }
+
+        // ブログ機能
+        let blogPosts = [];
+        let draftPosts = [];
+        let postIdCounter = 1;
+        
+        // ローカルストレージからデータを読み込み
+        function loadBlogData() {
+            try {
+                const savedBlogPosts = localStorage.getItem('terakoya-blog-posts');
+                const savedDraftPosts = localStorage.getItem('terakoya-draft-posts');
+                const savedCounter = localStorage.getItem('terakoya-post-counter');
+                
+                // 管理者サイトからの記事データを読み込み
+                const adminArticles = JSON.parse(localStorage.getItem('terakoya_articles')) || [];
+                
+                // 既存のブログ投稿を読み込み
+                if (savedBlogPosts) {
+                    blogPosts = JSON.parse(savedBlogPosts);
+                } else {
+                    blogPosts = [];
+                }
+                
+                // 管理者サイトの公開記事をブログ投稿に追加
+                adminArticles.forEach(article => {
+                    if (article.status === 'published') {
+                        // 既に同じIDの記事がないかチェック
+                        const existingIndex = blogPosts.findIndex(post => post.adminId === article.id);
+                        
+                        const blogPost = {
+                            id: existingIndex >= 0 ? blogPosts[existingIndex].id : Date.now() + Math.random(),
+                            adminId: article.id, // 管理者サイトの記事IDを保存
+                            title: article.title,
+                            content: article.content,
+                            date: article.createdAt || new Date().toLocaleString('ja-JP'),
+                            category: getCategoryDisplayName(article.category),
+                            author: article.author || '管理者'
+                        };
+                        
+                        if (existingIndex >= 0) {
+                            // 既存の記事を更新
+                            blogPosts[existingIndex] = blogPost;
+                        } else {
+                            // 新しい記事を追加
+                            blogPosts.push(blogPost);
+                        }
+                    }
+                });
+                
+                // 下書きも同様に処理
+                if (savedDraftPosts) {
+                    draftPosts = JSON.parse(savedDraftPosts);
+                } else {
+                    draftPosts = [];
+                }
+                
+                // 管理者サイトの下書きを追加
+                adminArticles.forEach(article => {
+                    if (article.status === 'draft') {
+                        const existingIndex = draftPosts.findIndex(post => post.adminId === article.id);
+                        
+                        const draftPost = {
+                            id: existingIndex >= 0 ? draftPosts[existingIndex].id : Date.now() + Math.random(),
+                            adminId: article.id,
+                            title: article.title,
+                            content: article.content,
+                            date: article.createdAt || new Date().toLocaleString('ja-JP'),
+                            category: getCategoryDisplayName(article.category),
+                            author: article.author || '管理者'
+                        };
+                        
+                        if (existingIndex >= 0) {
+                            draftPosts[existingIndex] = draftPost;
+                        } else {
+                            draftPosts.push(draftPost);
+                        }
+                    }
+                });
+                
+                // 日付順でソート（新しい順）
+                blogPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                draftPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                if (savedCounter) {
+                    postIdCounter = parseInt(savedCounter);
+                }
+                
+                // 表示を更新
+                renderAllPublishedPosts();
+                if (isAdminMode) {
+                    renderDraftPosts();
+                }
+                
+                console.log('ブログデータを読み込みました:', {
+                    公開記事: blogPosts.length,
+                    下書き: draftPosts.length,
+                    管理者記事: adminArticles.length,
+                    次のＩＤ: postIdCounter
+                });
+            } catch (error) {
+                console.error('ブログデータの読み込みに失敗:', error);
+            }
+        }
+        
+        // カテゴリー名を表示用に変換
+        function getCategoryDisplayName(category) {
+            const categoryNames = {
+                'news': 'お知らせ',
+                'event': 'イベント',
+                'blog': 'ブログ',
+                'activity': '活動報告'
+            };
+            return categoryNames[category] || category || 'ブログ';
+        }
+        
+        // ローカルストレージにデータを保存
+        function saveBlogData() {
+            try {
+                localStorage.setItem('terakoya-blog-posts', JSON.stringify(blogPosts));
+                localStorage.setItem('terakoya-draft-posts', JSON.stringify(draftPosts));
+                localStorage.setItem('terakoya-post-counter', postIdCounter.toString());
+                console.log('ブログデータを保存しました');
+            } catch (error) {
+                console.error('ブログデータの保存に失敗:', error);
+            }
+        }
+
+        function showPublishedPosts() {
+            document.getElementById('published-posts').style.display = 'block';
+            document.getElementById('draft-posts').style.display = 'none';
+            document.getElementById('published-tab').style.background = 'linear-gradient(135deg, #e17055, #d63031)';
+            document.getElementById('published-tab').style.color = '#fff';
+            document.getElementById('draft-tab').style.background = '#ddd';
+            document.getElementById('draft-tab').style.color = '#636e72';
+        }
+
+        function showDraftPosts() {
+            document.getElementById('published-posts').style.display = 'none';
+            document.getElementById('draft-posts').style.display = 'block';
+            document.getElementById('draft-tab').style.background = 'linear-gradient(135deg, #74b9ff, #0984e3)';
+            document.getElementById('draft-tab').style.color = '#fff';
+            document.getElementById('published-tab').style.background = '#ddd';
+            document.getElementById('published-tab').style.color = '#636e72';
+        }
+
+        function deletePost(postId) {
+            if (confirm('この記事を削除しますか？')) {
+                const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postElement) {
+                    postElement.remove();
+                    alert('記事を削除しました');
+                }
+            }
+        }
+
+        function saveDraft() {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です');
+                return;
+            }
+            
+            const title = document.getElementById('blog-title').value;
+            const category = document.getElementById('blog-category').value;
+            const content = document.getElementById('blog-content').value;
+
+            if (!title || !content) {
+                alert('タイトルと内容を入力してください');
+                return;
+            }
+
+            const draft = {
+                id: postIdCounter++,
+                title: title,
+                category: category,
+                content: content,
+                date: new Date().toLocaleDateString('ja-JP')
+            };
+
+            draftPosts.push(draft);
+            saveBlogData(); // 保存
+            renderDraftPosts();
+            clearForm();
+            alert('下書きとして保存しました');
+        }
+
+        function publishPost() {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です');
+                return;
+            }
+            
+            const title = document.getElementById('blog-title').value;
+            const category = document.getElementById('blog-category').value;
+            const content = document.getElementById('blog-content').value;
+
+            if (!title || !content) {
+                alert('タイトルと内容を入力してください');
+                return;
+            }
+
+            const post = {
+                id: postIdCounter++,
+                title: title,
+                category: category,
+                content: content,
+                date: new Date().toLocaleDateString('ja-JP')
+            };
+
+            addNewPublishedPost(post, true); // true = 保存する
+            clearForm();
+            showPublishedPosts();
+            alert('記事を公開しました！');
+        }
+
+        function publishDraft(draftId) {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です');
+                return;
+            }
+            
+            const draftIndex = draftPosts.findIndex(draft => draft.id === draftId);
+            if (draftIndex !== -1) {
+                const draft = draftPosts[draftIndex];
+                draftPosts.splice(draftIndex, 1); // 下書きから削除
+                addNewPublishedPost(draft, true); // true = 保存する
+                renderDraftPosts();
+                showPublishedPosts();
+                alert('下書きを公開しました！');
+            }
+        }
+
+        function deleteDraft(draftId) {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です');
+                return;
+            }
+            
+            if (confirm('この下書きを削除しますか？')) {
+                const draftIndex = draftPosts.findIndex(draft => draft.id === draftId);
+                if (draftIndex !== -1) {
+                    draftPosts.splice(draftIndex, 1);
+                    saveBlogData(); // 保存
+                    renderDraftPosts();
+                    alert('下書きを削除しました');
+                }
+            }
+        }
+
+        // カテゴリーに応じた色を取得
+        function getCategoryColor(category) {
+            const categoryColors = {
+                'お知らせ': 'linear-gradient(135deg, #74b9ff, #0984e3)',
+                'イベント': 'linear-gradient(135deg, #fd79a8, #e84393)',
+                'ブログ': 'linear-gradient(135deg, #ffeaa7, #fdcb6e)',
+                '活動報告': 'linear-gradient(135deg, #55efc4, #00b894)'
+            };
+            return categoryColors[category] || 'linear-gradient(135deg, #a8edea, #fed6e3)';
+        }
+
+        // カテゴリーに応じたアイコンを取得
+        function getCategoryIcon(category) {
+            const categoryIcons = {
+                'お知らせ': '📢',
+                'イベント': '🎭',
+                'ブログ': '📝',
+                '活動報告': '📈'
+            };
+            return categoryIcons[category] || '📝';
+        }
+
+        // 新しい公開記事を追加（保存オプション付き）
+        function addNewPublishedPost(post, shouldSave = true) {
+            if (shouldSave) {
+                blogPosts.unshift(post);
+                saveBlogData();
+            }
+            
+            const color = getCategoryColor(post.category);
+            const textColor = (color.includes('#74b9ff') || color.includes('#fd79a8')) ? '#fff' : '#2d3436';
+            const categoryIcon = getCategoryIcon(post.category);
+
+            const article = document.createElement('article');
+            article.setAttribute('data-post-id', post.id);
+            article.style.cssText = `background: ${color}; padding: 2.5rem; border-radius: 20px; position: relative; overflow: hidden; margin-bottom: 2rem; ${textColor === '#fff' ? 'color: #fff;' : ''}`;
+            
+            // 削除ボタンは管理者モードでのみ表示
+            const deleteButton = isAdminMode ? 
+                `<button onclick="deletePost(${post.id})" style="position: absolute; top: 15px; right: 15px; background: #d63031; color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; z-index: 10;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🗑️</button>` 
+                : '';
+            
+            // 管理者サイト連携記事の場合は特別なバッジを表示
+            const adminBadge = post.adminId ? 
+                `<div style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); color: #2d3436; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600;">管理者投稿</div>` 
+                : '';
+            
+            article.innerHTML = `
+                ${deleteButton}
+                ${adminBadge}
+                <div style="position: absolute; top: -10px; right: -10px; width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 50%;"></div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                            <span style="font-size: 1.5rem; margin-right: 0.5rem;">${categoryIcon}</span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; color: ${textColor};">${post.category}</span>
+                        </div>
+                        <h3 style="color: ${textColor}; font-size: 1.8rem; margin-bottom: 0.5rem;">${post.title}</h3>
+                        <div style="color: ${textColor === '#fff' ? 'rgba(255,255,255,0.9)' : '#636e72'}; font-size: 0.95rem; font-weight: 600;">
+                            ${post.author} • ${post.date}
+                        </div>
+                    </div>
+                </div>
+                <div style="color: ${textColor}; line-height: 1.7; font-size: 1.1rem;">
+                    <p>${post.content}</p>
+                </div>
+            `;
+
+            const publishedPostsContainer = document.getElementById('published-posts');
+            publishedPostsContainer.insertBefore(article, publishedPostsContainer.firstChild);
+        }
+
+        function renderDraftPosts() {
+            const draftContainer = document.getElementById('draft-posts');
+            
+            if (draftPosts.length === 0) {
+                draftContainer.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #636e72;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                        <p style="font-size: 1.2rem;">下書きはまだありません</p>
+                        <p>記事を下書きとして保存すると、ここに表示されます</p>
+                    </div>
+                `;
+            } else {
+                let draftsHTML = '';
+                draftPosts.forEach(draft => {
+                    draftsHTML += `
+                        <article style="background: #fff; padding: 2.5rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px dashed #74b9ff;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                                <div>
+                                    <h3 style="color: #2d3436; font-size: 1.8rem; margin-bottom: 0.5rem;">${draft.title}</h3>
+                                    <div style="color: #636e72; font-size: 0.95rem; font-weight: 600;">${draft.date}</div>
+                                </div>
+                                <div style="background: #74b9ff; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">${draft.category}</div>
+                            </div>
+                            <div style="color: #2d3436; line-height: 1.7; font-size: 1.1rem; margin-bottom: 2rem;">
+                                <p>${draft.content}</p>
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: center;">
+                                <button onclick="publishDraft(${draft.id})" style="background: linear-gradient(135deg, #00b894, #00cec9); color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    📢 公開する
+                                </button>
+                                <button onclick="deleteDraft(${draft.id})" style="background: linear-gradient(135deg, #d63031, #e17055); color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    🗑️ 削除
+                                </button>
+                            </div>
+                        </article>
+                    `;
+                });
+                draftContainer.innerHTML = draftsHTML;
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('blog-title').value = '';
+            document.getElementById('blog-content').value = '';
+            document.getElementById('blog-category').selectedIndex = 0;
+        }
+
+        // 管理者モード制御機能
+        let isAdminMode = false;
+        
+        // URLパラメータから管理者モードを判定
+        function checkAdminMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const adminKey = urlParams.get('admin');
+            const secretKey = 'terakoya2025admin'; // 秘密のキー
+            
+            if (adminKey === secretKey) {
+                isAdminMode = true;
+                enableAdminMode();
+            } else {
+                isAdminMode = false;
+                disableAdminMode();
+            }
+        }
+        
+        // 管理者モードを有効化
+        function enableAdminMode() {
+            const adminTabs = document.getElementById('admin-tabs');
+            const adminPostForm = document.getElementById('admin-post-form');
+            const adminToggle = document.getElementById('admin-toggle');
+            
+            if (adminTabs) adminTabs.style.display = 'flex';
+            if (adminPostForm) adminPostForm.style.display = 'block';
+            if (adminToggle) {
+                adminToggle.textContent = '🔓 管理者モード (ON)';
+                adminToggle.style.opacity = '1';
+                adminToggle.style.display = 'block';
+            }
+            
+            // 管理者用の通知（コンソールに表示）
+            console.log('管理者モードが有効になりました');
+        }
+        
+        // 管理者モードを無効化（お客さんモード）
+        function disableAdminMode() {
+            const adminTabs = document.getElementById('admin-tabs');
+            const adminPostForm = document.getElementById('admin-post-form');
+            const adminToggle = document.getElementById('admin-toggle');
+            
+            if (adminTabs) adminTabs.style.display = 'none';
+            if (adminPostForm) adminPostForm.style.display = 'none';
+            if (adminToggle) adminToggle.style.display = 'none';
+            
+            // 下書き表示も非表示
+            const draftPosts = document.getElementById('draft-posts');
+            const publishedPosts = document.getElementById('published-posts');
+            if (draftPosts) draftPosts.style.display = 'none';
+            if (publishedPosts) publishedPosts.style.display = 'block';
+        }
+        
+        // 従来の切り替え機能は管理者のみ使用可能
+        function toggleAdminMode() {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です。管理者用URLからアクセスしてください。');
+                return;
+            }
+            // 管理者の場合は何もしない（既に有効化済み）
+        }
+
+        // 公開記事の削除機能（管理者のみ）
+        function deletePost(postId) {
+            if (!isAdminMode) {
+                alert('管理者権限が必要です');
+                return;
+            }
+            
+            if (confirm('この記事を削除しますか？')) {
+                const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postElement) {
+                    // 配列からも削除
+                    const postIndex = blogPosts.findIndex(post => post.id === postId);
+                    if (postIndex !== -1) {
+                        blogPosts.splice(postIndex, 1);
+                        saveBlogData(); // 保存
+                    }
+                    postElement.remove();
+                    console.log('記事を削除しました: ' + postId);
+                }
+            }
+        }
+        
+        // 公開記事を全てレンダリングする関数
+        function renderAllPublishedPosts() {
+            const publishedPostsContainer = document.getElementById('published-posts');
+            if (!publishedPostsContainer || blogPosts.length === 0) {
+                return;
+            }
+            
+            // 既存の記事をクリア（初期メッセージ以外）
+            const articles = publishedPostsContainer.querySelectorAll('article');
+            articles.forEach(article => article.remove());
+            
+            // 保存された記事を表示
+            blogPosts.forEach(post => {
+                addNewPublishedPost(post, false); // false = 保存しない
+            });
+        }
+        
+        // お知らせ読み込み機能
+        function loadNewsData() {
+            const customerNews = JSON.parse(localStorage.getItem('terakoya_customer_news')) || [];
+            const newsContainer = document.getElementById('news-items-container');
+            
+            if (customerNews.length === 0) {
+                // デフォルトのお知らせを表示
+                newsContainer.innerHTML = `
+                    <div class="news-item">
+                        <div class="news-date">2025年7月24日</div>
+                        <h3 class="news-title">🏊‍♂️ 遠泳7月24日に行われました</h3>
+                        <p>今年の遠泳が無事に開催されました。みんな一生懸命に泳ぎ、素晴らしい挑戦を見せてくれました！参加者の皆さん、お疲れ様でした。</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2025年7月20日</div>
+                        <h3 class="news-title">🎴 百人一首クラブが8月17日広島チャンピオンズカップに出場します！</h3>
+                        <p>百人一首クラブのメンバーが広島で開催される全国大会「チャンピオンズカップ」に出場します。みんなで応援しましょう！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 日付の新しい順にソート
+            customerNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            newsContainer.innerHTML = customerNews.map(news => `
+                <div class="news-item">
+                    <div class="news-date">${formatNewsDate(news.date)}</div>
+                    <h3 class="news-title">${news.title}</h3>
+                    <p>${news.content}</p>
+                </div>
+            `).join('');
+        }
+        
+        function formatNewsDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminMode();
+            loadBlogData(); // ブログデータを読み込み
+            loadNewsData(); // お知らせデータを読み込み
+            incrementPageViews(); // ページ閲覧数をカウント
+            
+            
+            // 初期表示はホームセクションを表示
+            showSection('home');
+            
+            // 管理者サイトとの同期のために定期的にデータを確認
+            setInterval(function() {
+                const lastArticleCount = JSON.parse(localStorage.getItem('terakoya_articles') || '[]').length;
+                const currentKnownCount = blogPosts.filter(post => post.adminId).length + draftPosts.filter(post => post.adminId).length;
+                
+                if (lastArticleCount !== currentKnownCount) {
+                    // データが変更された可能性があるので再読み込み
+                    loadBlogData();
+                }
+            }, 3000); // 3秒間隔でチェック
+        });
+
+        // ページ閲覧数をカウントする機能
+        function incrementPageViews() {
+            let totalViews = parseInt(localStorage.getItem('terakoya_total_views')) || 0;
+            totalViews++;
+            localStorage.setItem('terakoya_total_views', totalViews.toString());
+            
+            // 管理者サイトの活動履歴にも記録（頻度を抑える）
+            if (Math.random() < 0.1) { // 10%の確率で活動履歴に記録
+                let activities = JSON.parse(localStorage.getItem('terakoya_activities')) || [];
+                activities.unshift({
+                    message: `サイトが閲覧されました（総閲覧数: ${totalViews}）`,
+                    timestamp: new Date().toLocaleString('ja-JP')
+                });
+                activities = activities.slice(0, 10);
+                localStorage.setItem('terakoya_activities', JSON.stringify(activities));
+            }
+        }
+
+        
+        // テスト用のダミーユーザーを追加（開発用）
+        if (users.length === 0) {
+            const testUser = {
+                id: 1,
+                username: 'test',
+                furigana: 'てすと',
+                userType: 'parent',
+                message: 'テスト用ユーザーです',
+                registeredAt: new Date().toLocaleString('ja-JP'),
+                lastActiveAt: new Date().toLocaleString('ja-JP'),
+                status: 'active',
+                source: 'customer_site'
+            };
+            users.push(testUser);
+            localStorage.setItem('terakoya_users', JSON.stringify(users));
+            console.log('テスト用ユーザーを作成しました:', testUser);
+        }
+
+        // ユーザーログイン機能
+        const loginForm = document.getElementById('user-login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                const username = document.getElementById('login-username').value.trim();
+                
+                if (!username) {
+                    alert('ユーザー名を入力してください。');
+                    return;
+                }
+                
+                console.log('ログイン試行:', username);
+                console.log('登録済みユーザー数:', users.length);
+
+                // ユーザーを検索
+                const user = users.find(u => u.username === username);
+                
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('terakoya_current_user', JSON.stringify(currentUser));
+                    
+                    console.log('ログイン成功:', currentUser.username);
+                    
+                    // 登録者限定コンテンツの表示を更新
+                    setTimeout(initializeMemberOnlyContent, 100);
+                    
+                    // マイページを表示
+                    showMyPage();
+                    
+                    // ログイン状態を更新
+                    updateHeaderProfileIcon();
+                    
+                    alert(`ようこそ、${user.username}さん！`);
+                } else {
+                    console.log('ユーザーが見つかりません:', username);
+                    alert('ユーザーが見つかりません。先に会員登録を行ってください。');
+                }
+            } catch (error) {
+                console.error('ログインエラー:', error);
+                alert('ログイン処理でエラーが発生しました。');
+            }
+        });
+        } else {
+            console.error('ログインフォームが見つかりません');
+        }
+
+        const registrationForm = document.getElementById('user-registration-form');
+        if (registrationForm) {
+            registrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value.trim();
+            const furigana = document.getElementById('register-furigana').value.trim();
+            const userType = document.getElementById('register-user-type').value;
+            const message = document.getElementById('register-message').value.trim();
+
+            // バリデーション
+            if (!username) {
+                alert('ユーザー名を入力してください。');
+                return;
+            }
+
+            if (username.length > 20) {
+                alert('ユーザー名は20文字以内で入力してください。');
+                return;
+            }
+
+            // ふりがなのバリデーション
+            if (furigana) {
+                const hiraganaPattern = /^[あ-ん\s　]*$/;
+                if (!hiraganaPattern.test(furigana)) {
+                    alert('ふりがなはひらがなで入力してください。');
+                    return;
+                }
+                if (furigana.length > 30) {
+                    alert('ふりがなは30文字以内で入力してください。');
+                    return;
+                }
+            }
+
+            // 重複チェック
+            if (users.some(user => user.username === username)) {
+                alert('申し訳ございません。このユーザー名は既に使用されています。別のユーザー名をお試しください。');
+                return;
+            }
+
+            // 新しいユーザーを作成
+            const newUser = {
+                id: userIdCounter++,
+                username: username,
+                furigana: furigana,
+                userType: userType,
+                message: message,
+                registeredAt: new Date().toLocaleString('ja-JP'),
+                lastActiveAt: new Date().toLocaleString('ja-JP'), // 最終アクティブ時刻
+                status: 'active',
+                source: 'customer_site' // お客さん用サイトからの登録を識別
+            };
+
+            users.push(newUser);
+            
+            // データを保存
+            localStorage.setItem('terakoya_users', JSON.stringify(users));
+            localStorage.setItem('terakoya_user_counter', userIdCounter.toString());
+
+            // 自動ログイン
+            currentUser = newUser;
+            localStorage.setItem('terakoya_current_user', JSON.stringify(currentUser));
+            
+            // 登録者限定コンテンツの表示を更新
+            initializeMemberOnlyContent();
+            
+            // プロフィールアイコン状態を更新してマイページに切り替え
+            updateProfileIconState();
+            showMyPage();
+
+            // 管理者サイトの活動履歴にも記録
+            let activities = JSON.parse(localStorage.getItem('terakoya_activities')) || [];
+            activities.unshift({
+                message: `新しいユーザー「${username}」がお客さん用サイトから登録されました`,
+                timestamp: new Date().toLocaleString('ja-JP')
+            });
+            activities = activities.slice(0, 10); // 最新10件のみ保持
+            localStorage.setItem('terakoya_activities', JSON.stringify(activities));
+        });
+
+        // フォーカス時のスタイル改善
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('#user-registration-form input, #user-registration-form textarea, #user-registration-form select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#00b894';
+                    this.style.boxShadow = '0 0 0 3px rgba(0, 184, 148, 0.1)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#ddd';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+        } else {
+            console.error('登録フォームが見つかりません');
+        }
+
+        // ログイン状態管理機能
+        function checkLoginStatus() {
+            console.log('ログイン状態をチェック中...');
+            const savedUser = localStorage.getItem('terakoya_current_user');
+            console.log('保存されたユーザー情報:', savedUser);
+            
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    console.log('currentUserを復元:', currentUser);
+                    showMyPage();
+                } catch (error) {
+                    console.error('ユーザー情報の復元に失敗:', error);
+                    localStorage.removeItem('terakoya_current_user');
+                    currentUser = null;
+                    showRegisterForm();
+                }
+            } else {
+                console.log('未ログイン状態');
+                showRegisterForm();
+            }
+        }
+
+        function showRegisterForm() {
+            // プロフィールアイコンは常に表示（ログアウト状態のドロップダウンを使用）
+            updateProfileIconState();
+        }
+
+        function showMyPage() {
+            if (!currentUser) return;
+            
+            // プロフィールアイコンの情報を更新
+            updateProfileIcon();
+            
+            // マイページセクションを表示
+            showSection('mypage');
+        }
+
+        // プロフィールアイコンの状態を更新
+        function updateProfileIconState() {
+            const profileIcon = document.getElementById('profile-icon');
+            const loggedInDropdown = document.getElementById('profile-dropdown-logged-in');
+            const loggedOutDropdown = document.getElementById('profile-dropdown-logged-out');
+            
+            // アイコンは常に表示
+            profileIcon.style.display = 'block';
+            
+            if (currentUser) {
+                // ログイン済み：ユーザー情報を表示
+                updateProfileIcon();
+                loggedInDropdown.style.display = 'none';
+                loggedOutDropdown.style.display = 'none';
+            } else {
+                // ログアウト状態：デフォルトアイコンを表示
+                const avatarImg = document.getElementById('profile-avatar-img');
+                const avatarText = document.getElementById('profile-avatar-text');
+                avatarImg.style.display = 'none';
+                avatarText.style.display = 'block';
+                avatarText.textContent = '👤';
+                
+                loggedInDropdown.style.display = 'none';
+                loggedOutDropdown.style.display = 'none';
+            }
+        }
+
+        function updateProfileIcon() {
+            if (!currentUser) return;
+            
+            // プロフィールアイコンの画像またはテキスト
+            const avatarImg = document.getElementById('profile-avatar-img');
+            const avatarText = document.getElementById('profile-avatar-text');
+            
+            if (currentUser.profileImage) {
+                avatarImg.src = currentUser.profileImage;
+                avatarImg.style.display = 'block';
+                avatarText.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarText.style.display = 'block';
+                avatarText.textContent = currentUser.username.charAt(0).toUpperCase();
+            }
+            
+            // ドロップダウンの情報
+            document.getElementById('dropdown-username').textContent = currentUser.username;
+            
+            const userTypeNames = {
+                'parent': '保護者',
+                'student': '生徒',
+                'visitor': '見学希望者',
+                'other': 'その他'
+            };
+            document.getElementById('dropdown-usertype').textContent = userTypeNames[currentUser.userType] || currentUser.userType;
+        }
+
+        function updateMyPageInfo() {
+            if (!currentUser) return;
+            
+            // マイページのアバター（画像またはテキスト）
+            const userAvatarImg = document.getElementById('user-avatar-img');
+            const userAvatarText = document.getElementById('user-avatar-text');
+            
+            if (currentUser.profileImage) {
+                userAvatarImg.src = currentUser.profileImage;
+                userAvatarImg.style.display = 'block';
+                userAvatarText.style.display = 'none';
+            } else {
+                userAvatarImg.style.display = 'none';
+                userAvatarText.style.display = 'block';
+                userAvatarText.textContent = currentUser.username.charAt(0).toUpperCase();
+            }
+            
+            // ユーザー名
+            document.getElementById('user-display-name').textContent = currentUser.username;
+            
+            // お立場
+            const userTypeNames = {
+                'parent': '保護者',
+                'student': '生徒',
+                'visitor': '見学希望者',
+                'other': 'その他'
+            };
+            document.getElementById('user-display-type').textContent = userTypeNames[currentUser.userType] || currentUser.userType;
+            
+            // 登録日
+            document.getElementById('user-join-date').textContent = `登録日: ${currentUser.registeredAt}`;
+            
+            // 最終ログイン
+            document.getElementById('last-login').textContent = new Date().toLocaleDateString('ja-JP');
+            
+            // 登録からの日数
+            const joinDate = new Date(currentUser.registeredAt);
+            const today = new Date();
+            const daysDiff = Math.floor((today - joinDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-since-join').textContent = daysDiff;
+        }
+
+        function logout() {
+            if (confirm('ログアウトしますか？')) {
+                currentUser = null;
+                localStorage.removeItem('terakoya_current_user');
+                updateProfileIconState(); // アイコン状態を更新
+                
+                // フォームをリセット
+                document.getElementById('user-registration-form').reset();
+                
+                alert('ログアウトしました。');
+            }
+        }
+
+        // プロフィール編集機能
+        function openEditModal() {
+            if (!currentUser) return;
+            
+            // 現在の情報をフォームに設定
+            document.getElementById('edit-username').value = currentUser.username;
+            document.getElementById('edit-furigana').value = currentUser.furigana || '';
+            document.getElementById('edit-user-type').value = currentUser.userType;
+            document.getElementById('edit-message').value = currentUser.message || '';
+            
+            // プロフィール画像プレビューを設定
+            updateEditAvatarPreview();
+            
+            document.getElementById('edit-profile-modal').style.display = 'block';
+        }
+
+        function updateEditAvatarPreview() {
+            const editAvatarImg = document.getElementById('edit-avatar-img');
+            const editAvatarText = document.getElementById('edit-avatar-text');
+            
+            if (currentUser && currentUser.profileImage) {
+                editAvatarImg.src = currentUser.profileImage;
+                editAvatarImg.style.display = 'block';
+                editAvatarText.style.display = 'none';
+            } else {
+                editAvatarImg.style.display = 'none';
+                editAvatarText.style.display = 'block';
+                editAvatarText.textContent = currentUser ? currentUser.username.charAt(0).toUpperCase() : '?';
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-profile-modal').style.display = 'none';
+        }
+
+        // 画像アップロード処理
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // ファイルサイズチェック（2MB以下）
+            if (file.size > 2 * 1024 * 1024) {
+                alert('ファイルサイズは2MB以下にしてください。');
+                return;
+            }
+
+            // ファイル形式チェック
+            if (!file.type.startsWith('image/')) {
+                alert('画像ファイルを選択してください。');
+                return;
+            }
+
+            // FileReaderで画像をBase64に変換
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                // 一時的にcurrentUserに保存（保存ボタンを押すまでは確定しない）
+                if (!currentUser.tempProfileImage) {
+                    currentUser.tempProfileImage = imageData;
+                }
+                currentUser.tempProfileImage = imageData;
+                
+                // プレビュー更新
+                const editAvatarImg = document.getElementById('edit-avatar-img');
+                const editAvatarText = document.getElementById('edit-avatar-text');
+                
+                editAvatarImg.src = imageData;
+                editAvatarImg.style.display = 'block';
+                editAvatarText.style.display = 'none';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // プロフィール画像削除
+        function removeProfileImage() {
+            currentUser.tempProfileImage = null;
+            updateEditAvatarPreview();
+        }
+
+        // プロフィール編集フォームの送信
+        document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentUser) return;
+            
+            const furigana = document.getElementById('edit-furigana').value.trim();
+            const userType = document.getElementById('edit-user-type').value;
+            const message = document.getElementById('edit-message').value.trim();
+
+            // ふりがなのバリデーション
+            if (furigana) {
+                const hiraganaPattern = /^[あ-ん\s　]*$/;
+                if (!hiraganaPattern.test(furigana)) {
+                    alert('ふりがなはひらがなで入力してください。');
+                    return;
+                }
+            }
+
+            // ユーザー情報を更新
+            currentUser.furigana = furigana;
+            currentUser.userType = userType;
+            currentUser.message = message;
+            currentUser.lastActiveAt = new Date().toLocaleString('ja-JP');
+            
+            // プロフィール画像を保存
+            if (currentUser.tempProfileImage !== undefined) {
+                currentUser.profileImage = currentUser.tempProfileImage;
+                delete currentUser.tempProfileImage;
+            }
+
+            // ローカルストレージ内のユーザー情報も更新
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = { ...currentUser };
+                localStorage.setItem('terakoya_users', JSON.stringify(users));
+            }
+
+            // 現在のユーザー情報を保存
+            localStorage.setItem('terakoya_current_user', JSON.stringify(currentUser));
+
+            // マイページとプロフィールアイコンの表示を更新
+            updateMyPageInfo();
+            updateProfileIcon();
+            
+            // モーダルを閉じて成功メッセージ
+            closeEditModal();
+            alert('プロフィールを更新しました！');
+
+            // 管理者サイトの活動履歴にも記録
+            let activities = JSON.parse(localStorage.getItem('terakoya_activities')) || [];
+            activities.unshift({
+                message: `ユーザー「${currentUser.username}」がプロフィールを更新しました`,
+                timestamp: new Date().toLocaleString('ja-JP')
+            });
+            activities = activities.slice(0, 10);
+            localStorage.setItem('terakoya_activities', JSON.stringify(activities));
+        });
+
+        // プロフィールドロップダウン機能
+        function toggleProfileMenu() {
+            const loggedInDropdown = document.getElementById('profile-dropdown-logged-in');
+            const loggedOutDropdown = document.getElementById('profile-dropdown-logged-out');
+            
+            if (currentUser) {
+                // ログイン済みドロップダウンを表示
+                const isVisible = loggedInDropdown.style.display === 'block';
+                loggedInDropdown.style.display = isVisible ? 'none' : 'block';
+                loggedOutDropdown.style.display = 'none';
+            } else {
+                // ログアウト状態ドロップダウンを表示
+                const isVisible = loggedOutDropdown.style.display === 'block';
+                loggedOutDropdown.style.display = isVisible ? 'none' : 'block';
+                loggedInDropdown.style.display = 'none';
+            }
+        }
+
+        function closeProfileMenu() {
+            document.getElementById('profile-dropdown-logged-in').style.display = 'none';
+            document.getElementById('profile-dropdown-logged-out').style.display = 'none';
+        }
+
+        // ログアウト状態でマイページをクリックした時の処理
+        function handleMypageClick() {
+            alert('マイページを表示するにはログインが必要です。');
+            showSection('register');
+            closeProfileMenu();
+        }
+
+        // ページ内の他の場所をクリックしたときにドロップダウンを閉じる
+        document.addEventListener('click', function(event) {
+            const profileIcon = document.getElementById('profile-icon');
+            const editModal = document.getElementById('edit-profile-modal');
+            
+            // プロフィールドロップダウンの制御
+            if (profileIcon && !profileIcon.contains(event.target)) {
+                closeProfileMenu();
+            }
+            
+            // 編集モーダルの制御
+            if (event.target === editModal) {
+                closeEditModal();
+            }
+        });
+
+        // セクション表示機能
+        function showSection(sectionId) {
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+            
+            // モバイルメニューを閉じる
+            const navMenu = document.querySelector('.nav-menu');
+            const hamburger = document.querySelector('.hamburger');
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+            
+            
+        }
+        
+        // 登録者限定メッセージを表示
+        function showMemberOnlyMessage(sectionId) {
+            // まず通常のセクション表示を行う
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+            
+            // 登録者限定メッセージを表示し、コンテンツを非表示
+            if (sectionId === 'quiz') {
+                document.getElementById('quiz-login-required').style.display = 'block';
+                document.getElementById('quiz-content').style.display = 'none';
+            } else if (sectionId === 'blog') {
+                document.getElementById('blog-login-required').style.display = 'block';
+                document.getElementById('blog-content').style.display = 'none';
+            }
+        }
+        
+        // 登録者限定コンテンツを表示
+        function showMemberContent(sectionId) {
+            if (sectionId === 'quiz') {
+                document.getElementById('quiz-login-required').style.display = 'none';
+                document.getElementById('quiz-content').style.display = 'block';
+            } else if (sectionId === 'blog') {
+                document.getElementById('blog-login-required').style.display = 'none';
+                document.getElementById('blog-content').style.display = 'block';
+            }
+        }
+        
+        // 登録者限定コンテンツの初期表示制御
+        function initializeMemberOnlyContent() {
+            try {
+                const quizLoginRequired = document.getElementById('quiz-login-required');
+                const quizContent = document.getElementById('quiz-content');
+                const blogLoginRequired = document.getElementById('blog-login-required');
+                const blogContent = document.getElementById('blog-content');
+                
+                if (!quizLoginRequired || !quizContent || !blogLoginRequired || !blogContent) {
+                    console.log('登録者限定コンテンツの要素が見つかりません');
+                    return;
+                }
+                
+                if (!currentUser) {
+                    // 未ログインの場合：登録者限定メッセージを表示
+                    quizLoginRequired.style.display = 'block';
+                    quizContent.style.display = 'none';
+                    blogLoginRequired.style.display = 'block';
+                    blogContent.style.display = 'none';
+                    console.log('未ログイン: 登録者限定メッセージを表示');
+                } else {
+                    // ログイン済みの場合：コンテンツを表示
+                    quizLoginRequired.style.display = 'none';
+                    quizContent.style.display = 'block';
+                    blogLoginRequired.style.display = 'none';
+                    blogContent.style.display = 'block';
+                    console.log('ログイン済み: コンテンツを表示');
+                }
+            } catch (error) {
+                console.error('initializeMemberOnlyContent エラー:', error);
+            }
+        }
+
+        // マスコットキャラクター「てらちゃん」機能
+        class TerakoChan {
+            constructor() {
+                this.isVisible = true;
+                this.currentMode = 'greeting'; // greeting, guide, quiz
+                this.quizData = [
+                    {
+                        question: "てらこやの朝一番にすることは何かな？",
+                        options: ["朝のミーティング", "掃除", "朝食", "勉強"],
+                        correct: 0,
+                        explanation: "てらこやでは朝のミーティングで一日のプランを自分で決めて、みんなで共有するよ！"
+                    },
+                    {
+                        question: "てらこやで大切にしていることは？",
+                        options: ["競争すること", "自分らしくいること", "静かにすること", "早く終わること"],
+                        correct: 1,
+                        explanation: "てらこやでは一人ひとりが自分らしく過ごせることを大切にしているんだ！"
+                    },
+                    {
+                        question: "プランの時間では何をするの？",
+                        options: ["決められた課題", "やりたいことを選ぶ", "テストを受ける", "じっと座っている"],
+                        correct: 1,
+                        explanation: "自分のやりたいことを選んで決めて取り組む時間だよ！子どもからのプランもスタッフプランもあるよ。"
+                    }
+                ];
+                this.currentQuiz = 0;
+                this.init();
+            }
+
+            init() {
+                this.createCharacter();
+                this.attachEventListeners();
+            }
+
+            createCharacter() {
+                // キャラクターのHTML要素を作成
+                const characterHtml = `
+                    <div id="terako-chan" class="terako-character">
+                        <div class="terako-body" onclick="terakoChan.toggleChat()">
+                            <div class="terako-face">
+                                <div class="terako-eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                                <div class="terako-beak"></div>
+                            </div>
+                        </div>
+                        <div class="terako-chat-bubble" id="terako-chat" style="display: block;">
+                            <div class="chat-content" id="chat-content">
+                                <p>こんにちは！僕は「てらちゃん」🦉<br>てらこやのことを案内するよ！</p>
+                            </div>
+                            <div class="chat-buttons" id="chat-buttons">
+                                <button onclick="terakoChan.showGuide()" class="chat-btn guide-btn">📍 サイト案内</button>
+                                <button onclick="terakoChan.startQuiz()" class="chat-btn quiz-btn">🧠 クイズに挑戦</button>
+                                <button onclick="terakoChan.hideChat()" class="chat-btn close-btn">❌ 閉じる</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // スタイルを追加
+                const style = document.createElement('style');
+                style.textContent = `
+                    .terako-character {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        z-index: 10000;
+                        font-family: 'Noto Sans JP', sans-serif;
+                    }
+
+                    .terako-body {
+                        width: 80px;
+                        height: 80px;
+                        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+                        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+                        transition: all 0.3s ease;
+                        position: relative;
+                        animation: float 3s ease-in-out infinite;
+                    }
+
+                    .terako-body:hover {
+                        transform: scale(1.1);
+                        box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+                    }
+
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-10px); }
+                    }
+
+                    .terako-face {
+                        position: relative;
+                        width: 60px;
+                        height: 60px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: column;
+                    }
+
+                    .terako-eyes {
+                        display: flex;
+                        gap: 12px;
+                        margin-bottom: 8px;
+                    }
+
+                    .eye {
+                        width: 16px;
+                        height: 16px;
+                        background: white;
+                        border-radius: 50%;
+                        position: relative;
+                    }
+
+                    .eye::after {
+                        content: '';
+                        position: absolute;
+                        width: 8px;
+                        height: 8px;
+                        background: #1a202c;
+                        border-radius: 50%;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        animation: blink 4s infinite;
+                    }
+
+                    @keyframes blink {
+                        0%, 95% { opacity: 1; }
+                        96%, 100% { opacity: 0; }
+                    }
+
+                    .terako-beak {
+                        width: 0;
+                        height: 0;
+                        border-left: 8px solid transparent;
+                        border-right: 8px solid transparent;
+                        border-top: 12px solid #f59e0b;
+                    }
+
+                    .terako-chat-bubble {
+                        position: absolute;
+                        bottom: 100px;
+                        right: 0;
+                        background: white;
+                        border-radius: 20px;
+                        padding: 20px;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+                        max-width: 300px;
+                        min-width: 280px;
+                        animation: slideIn 0.3s ease-out;
+                    }
+
+                    .terako-chat-bubble::after {
+                        content: '';
+                        position: absolute;
+                        bottom: -10px;
+                        right: 20px;
+                        width: 0;
+                        height: 0;
+                        border-left: 10px solid transparent;
+                        border-right: 10px solid transparent;
+                        border-top: 10px solid white;
+                    }
+
+                    @keyframes slideIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    .chat-content {
+                        margin-bottom: 15px;
+                        line-height: 1.6;
+                        color: #374151;
+                        font-size: 14px;
+                    }
+
+                    .chat-buttons {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+
+                    .chat-btn {
+                        padding: 10px 15px;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-size: 13px;
+                        font-weight: 500;
+                        font-family: 'Noto Sans JP', sans-serif;
+                        transition: all 0.2s ease;
+                    }
+
+                    .guide-btn {
+                        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+                        color: white;
+                    }
+
+                    .guide-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                    }
+
+                    .quiz-btn {
+                        background: linear-gradient(135deg, #10b981, #047857);
+                        color: white;
+                    }
+
+                    .quiz-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                    }
+
+                    .close-btn {
+                        background: #f3f4f6;
+                        color: #6b7280;
+                    }
+
+                    .close-btn:hover {
+                        background: #e5e7eb;
+                    }
+
+                    .quiz-option {
+                        background: #f8fafc;
+                        border: 2px solid #e2e8f0;
+                        margin: 5px 0;
+                        padding: 10px 15px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        text-align: left;
+                        width: 100%;
+                        font-family: 'Noto Sans JP', sans-serif;
+                        font-size: 13px;
+                    }
+
+                    .quiz-option:hover {
+                        background: #f1f5f9;
+                        border-color: #cbd5e1;
+                    }
+
+                    .quiz-option.correct {
+                        background: #dcfce7;
+                        border-color: #16a34a;
+                        color: #166534;
+                    }
+
+                    .quiz-option.incorrect {
+                        background: #fef2f2;
+                        border-color: #dc2626;
+                        color: #991b1b;
+                    }
+
+                    @media (max-width: 768px) {
+                        .terako-character {
+                            bottom: 15px;
+                            right: 15px;
+                        }
+
+                        .terako-body {
+                            width: 70px;
+                            height: 70px;
+                        }
+
+                        .terako-chat-bubble {
+                            max-width: 250px;
+                            min-width: 220px;
+                            right: -20px;
+                        }
+                    }
+                `;
+
+                document.head.appendChild(style);
+                document.body.insertAdjacentHTML('beforeend', characterHtml);
+            }
+
+            toggleChat() {
+                const chat = document.getElementById('terako-chat');
+                if (this.isVisible) {
+                    this.hideChat();
+                } else {
+                    this.showChat();
+                }
+            }
+
+            showChat() {
+                const chat = document.getElementById('terako-chat');
+                chat.style.display = 'block';
+                this.isVisible = true;
+                this.showGreeting();
+            }
+
+            hideChat() {
+                const chat = document.getElementById('terako-chat');
+                chat.style.display = 'none';
+                this.isVisible = false;
+            }
+
+            showGreeting() {
+                const content = document.getElementById('chat-content');
+                const buttons = document.getElementById('chat-buttons');
+                
+                content.innerHTML = `
+                    <p>こんにちは！僕は「てらちゃん」🦉<br>
+                    てらこやのことを案内したり、楽しいクイズを出したりするよ！<br>
+                    何をしようかな？</p>
+                `;
+                
+                buttons.innerHTML = `
+                    <button onclick="terakoChan.showGuide()" class="chat-btn guide-btn">📍 サイト案内</button>
+                    <button onclick="terakoChan.startQuiz()" class="chat-btn quiz-btn">🧠 クイズに挑戦</button>
+                    <button onclick="terakoChan.hideChat()" class="chat-btn close-btn">❌ 閉じる</button>
+                `;
+            }
+
+            showGuide() {
+                const content = document.getElementById('chat-content');
+                const buttons = document.getElementById('chat-buttons');
+                
+                content.innerHTML = `
+                    <p><strong>🏫 てらこやサイトの案内</strong></p>
+                    <p>どこを見てみたいかな？クリックするとそのセクションに移動するよ！</p>
+                `;
+                
+                buttons.innerHTML = `
+                    <button onclick="terakoChan.goToSection('hero')" class="chat-btn guide-btn">🏠 トップページ</button>
+                    <button onclick="terakoChan.goToSection('about')" class="chat-btn guide-btn">ℹ️ てらこやについて</button>
+                    <button onclick="terakoChan.goToSection('activities')" class="chat-btn guide-btn">🎨 活動内容</button>
+                    <button onclick="terakoChan.goToSection('daily')" class="chat-btn guide-btn">🌅 一日の流れ</button>
+                    <button onclick="terakoChan.goToSection('values')" class="chat-btn guide-btn">💝 大事にしていること</button>
+                    <button onclick="terakoChan.showGreeting()" class="chat-btn close-btn">🔙 戻る</button>
+                `;
+            }
+
+            goToSection(sectionId) {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const content = document.getElementById('chat-content');
+                    const sectionNames = {
+                        'hero': 'トップページ',
+                        'about': 'てらこやについて',
+                        'activities': '活動内容',
+                        'daily': '一日の流れ',
+                        'values': '大事にしていること'
+                    };
+                    content.innerHTML = `
+                        <p>📍 「${sectionNames[sectionId]}」に移動したよ！<br>
+                        ゆっくり読んでみてね🦉✨</p>
+                    `;
+                    
+                    setTimeout(() => {
+                        this.showGuide();
+                    }, 3000);
+                }
+            }
+
+            startQuiz() {
+                this.currentQuiz = 0;
+                this.showQuestion();
+            }
+
+            showQuestion() {
+                if (this.currentQuiz >= this.quizData.length) {
+                    this.showQuizComplete();
+                    return;
+                }
+
+                const quiz = this.quizData[this.currentQuiz];
+                const content = document.getElementById('chat-content');
+                const buttons = document.getElementById('chat-buttons');
+                
+                content.innerHTML = `
+                    <p><strong>🧠 クイズ ${this.currentQuiz + 1}/${this.quizData.length}</strong></p>
+                    <p>${quiz.question}</p>
+                `;
+                
+                buttons.innerHTML = quiz.options.map((option, index) => 
+                    `<button onclick="terakoChan.selectAnswer(${index})" class="quiz-option">${index + 1}. ${option}</button>`
+                ).join('') + 
+                `<button onclick="terakoChan.showGreeting()" class="chat-btn close-btn">🔙 戻る</button>`;
+            }
+
+            selectAnswer(selectedIndex) {
+                const quiz = this.quizData[this.currentQuiz];
+                const buttons = document.getElementById('chat-buttons');
+                const options = buttons.querySelectorAll('.quiz-option');
+                
+                // 正解・不正解の表示
+                options.forEach((option, index) => {
+                    if (index === quiz.correct) {
+                        option.classList.add('correct');
+                    } else if (index === selectedIndex && index !== quiz.correct) {
+                        option.classList.add('incorrect');
+                    }
+                    option.disabled = true;
+                });
+
+                // 解説表示
+                const content = document.getElementById('chat-content');
+                const isCorrect = selectedIndex === quiz.correct;
+                
+                setTimeout(() => {
+                    content.innerHTML = `
+                        <p><strong>${isCorrect ? '🎉 正解！' : '😅 残念！'}</strong></p>
+                        <p>${quiz.explanation}</p>
+                    `;
+                    
+                    const nextButton = document.createElement('button');
+                    nextButton.className = 'chat-btn guide-btn';
+                    nextButton.style.marginTop = '10px';
+                    nextButton.textContent = this.currentQuiz < this.quizData.length - 1 ? '➡️ 次の問題' : '🏆 結果を見る';
+                    nextButton.onclick = () => {
+                        this.currentQuiz++;
+                        this.showQuestion();
+                    };
+                    
+                    buttons.innerHTML = '';
+                    buttons.appendChild(nextButton);
+                }, 1500);
+            }
+
+            showQuizComplete() {
+                const content = document.getElementById('chat-content');
+                const buttons = document.getElementById('chat-buttons');
+                
+                content.innerHTML = `
+                    <p><strong>🏆 クイズ完了！</strong></p>
+                    <p>お疲れさま！てらこやのことがもっとわかったかな？🦉✨<br>
+                    また遊びに来てね！</p>
+                `;
+                
+                buttons.innerHTML = `
+                    <button onclick="terakoChan.startQuiz()" class="chat-btn quiz-btn">🔄 もう一度挑戦</button>
+                    <button onclick="terakoChan.showGreeting()" class="chat-btn guide-btn">🔙 メニューに戻る</button>
+                `;
+            }
+
+            attachEventListeners() {
+                // ESCキーでチャットを閉じる
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isVisible) {
+                        this.hideChat();
+                    }
+                });
+            }
+        }
+
+        // グローバルインスタンスを作成
+        let terakoChan;
+        
+        // ページ読み込み完了後にキャラクターを初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                terakoChan = new TerakoChan();
+            }, 1000);
+            
+            // 新機能の初期化
+            initializeQuiz();
+        });
+
+        // =====================================
+        // 新機能: クイズ
+        // =====================================
+
+        // クイズ機能のデータ
+        const quizQuestions = [
+            {
+                question: "おやつの時間は何時でしょう？",
+                options: ["2時", "3時", "4時"],
+                correct: 1,
+                explanation: "おやつの時間は3時です！"
+            },
+            {
+                question: "てらこやができたのは何年でしょう？",
+                options: ["2020年", "2021年", "2022年"],
+                correct: 1,
+                explanation: "てらこやは2021年にできました！"
+            },
+            {
+                question: "てらこやのマスコットの名前は？",
+                options: ["てらちゃん", "ハナちゃん", "タロウくん"],
+                correct: 0,
+                explanation: "てらこやのマスコットはてらちゃんです！"
+            },
+            {
+                question: "てらこやで一番人気の活動は？",
+                options: ["読書", "工作", "みんなでおやつ"],
+                correct: 2,
+                explanation: "みんなでおやつの時間が一番人気です！"
+            }
+        ];
+
+        // クイズ関連の変数
+        let currentQuiz = null;
+        let quizAnswered = false;
+        let quizCorrectCount = parseInt(localStorage.getItem('terakoya_quiz_correct')) || 0;
+        let quizTotalCount = parseInt(localStorage.getItem('terakoya_quiz_total')) || 0;
+
+        function initializeQuiz() {
+            updateQuizScore();
+            loadNewQuiz();
+        }
+
+        function loadNewQuiz() {
+            currentQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            quizAnswered = false;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const questionEl = document.getElementById('quiz-question');
+            const optionsEl = document.getElementById('quiz-options');
+            const resultEl = document.getElementById('quiz-result');
+
+            if (!questionEl || !optionsEl || !resultEl) return;
+
+            questionEl.textContent = currentQuiz.question;
+            resultEl.style.display = 'none';
+
+            optionsEl.innerHTML = '';
+            currentQuiz.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.style.cssText = `
+                    background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
+                    border: 2px solid transparent;
+                    border-radius: 15px;
+                    padding: 1rem 1.5rem;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    width: 100%;
+                    color: #333;
+                `;
+                button.textContent = option;
+                button.onmouseover = function() {
+                    if (!quizAnswered) {
+                        this.style.background = 'linear-gradient(135deg, #e8f0ff, #d0e4ff)';
+                        this.style.borderColor = '#4facfe';
+                        this.style.transform = 'translateY(-2px)';
+                    }
+                };
+                button.onmouseout = function() {
+                    if (!quizAnswered && !this.classList.contains('selected')) {
+                        this.style.background = 'linear-gradient(135deg, #f8f9ff, #e8f0ff)';
+                        this.style.borderColor = 'transparent';
+                        this.style.transform = 'translateY(0)';
+                    }
+                };
+                button.onclick = () => selectQuizAnswer(index, button);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function selectQuizAnswer(selectedIndex, clickedButton) {
+            if (quizAnswered) return;
+            
+            quizAnswered = true;
+            quizTotalCount++;
+            const options = document.querySelectorAll('#quiz-options button');
+            const resultEl = document.getElementById('quiz-result');
+            
+            options.forEach((button, index) => {
+                button.onclick = null;
+                button.style.cursor = 'default';
+                
+                if (index === currentQuiz.correct) {
+                    button.style.background = 'linear-gradient(135deg, #56c596, #43a047)';
+                    button.style.color = 'white';
+                    button.style.borderColor = '#43a047';
+                } else if (index === selectedIndex && index !== currentQuiz.correct) {
+                    button.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+                    button.style.color = 'white';
+                    button.style.borderColor = '#ee5a52';
+                }
+            });
+            
+            const isCorrect = selectedIndex === currentQuiz.correct;
+            
+            if (isCorrect) {
+                quizCorrectCount++;
+                resultEl.textContent = "正解！今日も元気にがんばろう！";
+                resultEl.style.background = 'linear-gradient(135deg, #d4edda, #c3e6cb)';
+                resultEl.style.color = '#155724';
+                resultEl.style.border = '2px solid #c3e6cb';
+            } else {
+                resultEl.textContent = `おしい！正解は「${currentQuiz.options[currentQuiz.correct]}」でした。${currentQuiz.explanation}`;
+                resultEl.style.background = 'linear-gradient(135deg, #f8d7da, #f5c6cb)';
+                resultEl.style.color = '#721c24';
+                resultEl.style.border = '2px solid #f5c6cb';
+            }
+            
+            resultEl.style.display = 'block';
+            
+            // ローカルストレージに保存
+            localStorage.setItem('terakoya_quiz_correct', quizCorrectCount.toString());
+            localStorage.setItem('terakoya_quiz_total', quizTotalCount.toString());
+            updateQuizScore();
+            
+            // 3秒後に新しい問題を表示
+            setTimeout(() => {
+                loadNewQuiz();
+            }, 3000);
+        }
+
+        function updateQuizScore() {
+            const correctEl = document.getElementById('quiz-correct-count');
+            const totalEl = document.getElementById('quiz-total-count');
+            
+            if (correctEl) correctEl.textContent = quizCorrectCount;
+            if (totalEl) totalEl.textContent = quizTotalCount;
+        }
+
+        function resetQuizScore() {
+            if (confirm('クイズの記録をリセットしますか？')) {
+                quizCorrectCount = 0;
+                quizTotalCount = 0;
+                localStorage.removeItem('terakoya_quiz_correct');
+                localStorage.removeItem('terakoya_quiz_total');
+                updateQuizScore();
+                loadNewQuiz();
+            }
+        }
+
+
+    </script>
+</body>
+</html>

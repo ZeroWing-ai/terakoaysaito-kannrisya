@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>てらこや 管理者ダッシュボード</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #3498db;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            width: 16px;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content-area {
+            padding: 40px;
+        }
+
+        /* ダッシュボードカード */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card-icon.users {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .card-icon.articles {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .card-icon.views {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .card-icon.activity {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .card-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .card-desc {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* セクション */
+        .section {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        /* ボタン */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* フォーム */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* テーブル */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* ステータスバッジ */
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .top-bar {
+                padding: 15px 20px;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        /* ログイン画面専用スタイル */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fadbd8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 初期セットアップ画面 -->
+    <div id="setup-container" class="login-container hidden">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏫 てらこや</h1>
+                <p>初期セットアップ - 管理者アカウント作成</p>
+            </div>
+            <div class="error-message" id="setup-error">
+                入力内容に問題があります。
+            </div>
+            <form class="login-form" id="setup-form">
+                <div class="form-group">
+                    <label>管理者ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="setup-username" placeholder="管理者ユーザー名を入力" required>
+                </div>
+                <div class="form-group">
+                    <label>パスワード <span style="color: #e74c3c;">*</span></label>
+                    <input type="password" id="setup-password" placeholder="パスワードを入力" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>パスワード確認 <span style="color: #e74c3c;">*</span></label>
+                    <input type="password" id="setup-password-confirm" placeholder="パスワードを再入力" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>管理者メールアドレス（任意）</label>
+                    <input type="email" id="setup-email" placeholder="メールアドレスを入力（省略可）">
+                </div>
+                <button type="submit" class="login-btn">管理者アカウントを作成</button>
+            </form>
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem;">
+                <strong>注意:</strong> このアカウント情報は大切に保管してください。<br>
+                パスワードは6文字以上で設定してください。<br>
+                メールアドレスは必須ではありませんが、連絡先として記録されます。
+            </div>
+        </div>
+    </div>
+
+    <!-- ログイン画面 -->
+    <div id="login-container" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏫 てらこや</h1>
+                <p>管理者ログイン</p>
+            </div>
+            <div class="error-message" id="login-error">
+                ユーザー名またはパスワードが間違っています。
+            </div>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label>ユーザー名</label>
+                    <input type="text" id="username" placeholder="ユーザー名を入力" required>
+                </div>
+                <div class="form-group">
+                    <label>パスワード</label>
+                    <input type="password" id="password" placeholder="パスワードを入力" required>
+                </div>
+                <button type="submit" class="login-btn">ログイン</button>
+            </form>
+            <div style="margin-top: 20px; text-align: center;">
+                <button type="button" onclick="resetAdminAccount()" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">
+                    管理者アカウントをリセット
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- メイン管理画面（ログイン後に表示） -->
+    <div id="admin-dashboard" class="hidden">
+    <!-- サイドバー -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>🏫 てらこや</h2>
+            <p>管理者ダッシュボード</p>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <i>📊</i> ダッシュボード
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('users')">
+                <i>👥</i> ユーザー管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('news')">
+                <i>📢</i> お知らせ管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('articles')">
+                <i>📝</i> 記事管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('settings')">
+                <i>⚙️</i> 設定
+            </a>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <!-- トップバー -->
+        <div class="top-bar">
+            <h1 id="page-title">ダッシュボード</h1>
+            <div class="user-info">
+                <div class="user-avatar">管</div>
+                <span>管理者</span>
+                <button class="logout-btn" onclick="logout()">ログアウト</button>
+            </div>
+        </div>
+
+        <!-- コンテンツエリア -->
+        <div class="content-area">
+            <!-- ダッシュボード概要 -->
+            <div id="dashboard-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-icon users">👥</div>
+                        <h3>登録ユーザー</h3>
+                        <div class="card-number" id="user-count">0</div>
+                        <div class="card-desc">総登録者数</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon articles">📝</div>
+                        <h3>記事数</h3>
+                        <div class="card-number" id="article-count">0</div>
+                        <div class="card-desc">公開済み記事</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon views">👁️</div>
+                        <h3>総閲覧数</h3>
+                        <div class="card-number" id="view-count">0</div>
+                        <div class="card-desc">総ビュー数</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon activity">🔥</div>
+                        <h3>アクティブ率</h3>
+                        <div class="card-number" id="active-rate">0%</div>
+                        <div class="card-desc">過去30日間</div>
+                    </div>
+                </div>
+
+                <!-- 最近の活動 -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📈 最近の活動</h2>
+                    </div>
+                    <div class="section-content">
+                        <div id="recent-activity">
+                            <p style="color: #7f8c8d; text-align: center;">まだ活動履歴がありません</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ユーザー管理セクション -->
+            <div id="users-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>👥 ユーザー管理</h2>
+                        <button class="btn btn-primary" onclick="openUserModal()">
+                            ➕ 新規ユーザー登録
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ユーザー</th>
+                                    <th>登録日</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- ユーザーデータがここに挿入されます -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- お知らせ管理セクション -->
+            <div id="news-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📢 お知らせ管理</h2>
+                        <button class="btn btn-primary" onclick="openNewsModal()">
+                            ➕ 新規お知らせ作成
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>タイトル</th>
+                                    <th>日付</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="news-table-body">
+                                <!-- お知らせデータがここに挿入されます -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 記事管理セクション -->
+            <div id="articles-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📝 記事管理</h2>
+                        <button class="btn btn-success" onclick="openArticleModal()">
+                            ➕ 新規記事作成
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>タイトル</th>
+                                    <th>作成日</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="articles-table-body">
+                                <!-- 記事データがここに挿入されます -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設定セクション -->
+            <div id="settings-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>⚙️ システム設定</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>サイトタイトル</label>
+                            <input type="text" value="てらこや公式サイト" id="site-title">
+                        </div>
+                        <div class="form-group">
+                            <label>管理者メールアドレス</label>
+                            <input type="email" value="admin@terakoya.jp" id="admin-email">
+                        </div>
+                        <div class="form-group">
+                            <label>サイト説明</label>
+                            <textarea id="site-description">みんなで学び、みんなで育つ場所</textarea>
+                        </div>
+                        <button class="btn btn-primary">設定を保存</button>
+                        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+                            <h4 style="color: #856404; margin-bottom: 10px;">⚠️ データリセット</h4>
+                            <p style="color: #856404; margin-bottom: 15px;">全てのユーザー、記事、活動履歴を削除します。この操作は取り消すことができません。</p>
+                            <button class="btn btn-danger" onclick="resetAllData()">🗑️ 全データをリセット</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div> <!-- /admin-dashboard -->
+
+    <!-- ユーザー登録モーダル -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規ユーザー登録</h2>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="user-form">
+                    <div class="form-group">
+                        <label>ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="new-username" placeholder="ユーザー名を入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" id="new-email" placeholder="メールアドレスを入力">
+                    </div>
+                    <div class="form-group">
+                        <label>ユーザータイプ</label>
+                        <select id="user-type">
+                            <option value="student">生徒</option>
+                            <option value="parent">保護者</option>
+                            <option value="staff">スタッフ</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeUserModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">登録</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 記事作成モーダル -->
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規記事作成</h2>
+                <span class="close" onclick="closeArticleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="article-form">
+                    <div class="form-group">
+                        <label>記事タイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="article-title" placeholder="記事のタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <select id="article-category">
+                            <option value="news">お知らせ</option>
+                            <option value="event">イベント</option>
+                            <option value="blog">ブログ</option>
+                            <option value="activity">活動報告</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>記事内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="article-content" placeholder="記事の内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="article-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeArticleModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-success">作成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- お知らせ作成モーダル -->
+    <div id="news-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規お知らせ作成</h2>
+                <span class="close" onclick="closeNewsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="news-form">
+                    <div class="form-group">
+                        <label>お知らせタイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="news-title" placeholder="お知らせのタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>日付 <span style="color: #e74c3c;">*</span></label>
+                        <input type="date" id="news-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>お知らせ内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="news-content" placeholder="お知らせの内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="news-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeNewsModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">作成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 記事編集モーダル -->
+    <div id="edit-article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>記事を編集</h2>
+                <span class="close" onclick="closeEditArticleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="edit-article-form">
+                    <div class="form-group">
+                        <label>記事タイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="edit-article-title" placeholder="記事のタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <select id="edit-article-category">
+                            <option value="news">お知らせ</option>
+                            <option value="event">イベント</option>
+                            <option value="blog">ブログ</option>
+                            <option value="activity">活動報告</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>記事内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="edit-article-content" placeholder="記事の内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="edit-article-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeEditArticleModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">更新</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 認証管理
+        let adminCredentials = JSON.parse(localStorage.getItem('terakoya_admin_credentials')) || null;
+        let isLoggedIn = localStorage.getItem('terakoya_admin_login') === 'true';
+        let loginSessionStart = parseInt(localStorage.getItem('terakoya_login_session')) || 0;
+        const SESSION_TIMEOUT = 4 * 60 * 60 * 1000; // 4時間
+
+        // 管理者アカウントの初期セットアップが完了しているかチェック
+        function isAdminSetupComplete() {
+            return adminCredentials !== null && adminCredentials.username && adminCredentials.password;
+        }
+
+        // ページ読み込み時の認証チェック
+        function checkAuthentication() {
+            const now = Date.now();
+            
+            // 管理者アカウントが未設定の場合はセットアップ画面を表示
+            if (!isAdminSetupComplete()) {
+                showSetupScreen();
+                return false;
+            }
+            
+            // セッションタイムアウトチェック
+            if (isLoggedIn && (now - loginSessionStart > SESSION_TIMEOUT)) {
+                logout();
+                return false;
+            }
+            
+            if (isLoggedIn) {
+                showAdminDashboard();
+                return true;
+            } else {
+                showLoginScreen();
+                return false;
+            }
+        }
+
+        // 管理者アカウント作成処理
+        function createAdminAccount(username, password, email) {
+            adminCredentials = {
+                username: username,
+                password: password,
+                email: email || '',
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+            
+            localStorage.setItem('terakoya_admin_credentials', JSON.stringify(adminCredentials));
+            addActivity('管理者アカウントが作成されました');
+            return true;
+        }
+
+        // ログイン処理
+        function login(username, password) {
+            if (adminCredentials && username === adminCredentials.username && password === adminCredentials.password) {
+                isLoggedIn = true;
+                loginSessionStart = Date.now();
+                localStorage.setItem('terakoya_admin_login', 'true');
+                localStorage.setItem('terakoya_login_session', loginSessionStart.toString());
+                
+                showAdminDashboard();
+                addActivity('管理者がログインしました');
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // ログアウト処理
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('terakoya_admin_login');
+            localStorage.removeItem('terakoya_login_session');
+            showLoginScreen();
+            // ページをリロードしてセッション情報をクリア
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+
+        // セットアップ画面表示
+        function showSetupScreen() {
+            document.getElementById('setup-container').classList.remove('hidden');
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        // ログイン画面表示
+        function showLoginScreen() {
+            document.getElementById('setup-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        // 管理画面表示
+        function showAdminDashboard() {
+            document.getElementById('setup-container').classList.add('hidden');
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+        }
+
+        // 管理者アカウントリセット
+        function resetAdminAccount() {
+            if (confirm('管理者アカウントをリセットしますか？\nこの操作により、新しい管理者アカウントを作成し直すことができます。')) {
+                if (confirm('最終確認：現在の管理者アカウントが削除され、ログアウトされます。続行しますか？')) {
+                    // 管理者認証情報をクリア
+                    localStorage.removeItem('terakoya_admin_credentials');
+                    localStorage.removeItem('terakoya_admin_login');
+                    localStorage.removeItem('terakoya_login_session');
+                    
+                    adminCredentials = null;
+                    isLoggedIn = false;
+                    
+                    // セットアップ画面を表示
+                    showSetupScreen();
+                    
+                    addActivity('管理者アカウントがリセットされました');
+                    alert('管理者アカウントがリセットされました。新しいアカウントを作成してください。');
+                }
+            }
+        }
+
+        // データ管理
+        let users = JSON.parse(localStorage.getItem('terakoya_users')) || [];
+        let articles = JSON.parse(localStorage.getItem('terakoya_articles')) || [];
+        let news = JSON.parse(localStorage.getItem('terakoya_news')) || [];
+        let userIdCounter = parseInt(localStorage.getItem('terakoya_user_counter')) || 1;
+        let newsIdCounter = parseInt(localStorage.getItem('terakoya_news_counter')) || 1;
+        let articleIdCounter = parseInt(localStorage.getItem('terakoya_article_counter')) || 1;
+        let totalViews = parseInt(localStorage.getItem('terakoya_total_views')) || 0;
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェックを最初に実行
+            if (checkAuthentication()) {
+                // ログイン済みの場合のみダッシュボード初期化
+                updateDashboard();
+                displayUsers();
+                loadNewsTable();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+            }
+        });
+
+        // セクション切り替え
+        function showSection(sectionName) {
+            // 全セクションを非表示
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // ナビゲーションの active 状態をリセット
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 選択されたセクションを表示
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // ナビゲーションの active 状態を設定
+            event.target.classList.add('active');
+            
+            // ページタイトルを更新
+            const titles = {
+                'dashboard': 'ダッシュボード',
+                'users': 'ユーザー管理',
+                'news': 'お知らせ管理',
+                'articles': '記事管理',
+                'settings': 'システム設定'
+            };
+            document.getElementById('page-title').textContent = titles[sectionName];
+        }
+
+        // ユーザー管理機能
+        function openUserModal() {
+            document.getElementById('user-modal').style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('user-modal').style.display = 'none';
+            document.getElementById('user-form').reset();
+        }
+
+        function addUser() {
+            const username = document.getElementById('new-username').value.trim();
+            const email = document.getElementById('new-email').value.trim();
+            const userType = document.getElementById('user-type').value;
+
+            if (!username) {
+                alert('ユーザー名を入力してください');
+                return;
+            }
+
+            if (users.some(user => user.username === username)) {
+                alert('このユーザー名は既に使用されています');
+                return;
+            }
+
+            const newUser = {
+                id: userIdCounter++,
+                username: username,
+                email: email,
+                userType: userType,
+                registeredAt: new Date().toLocaleString('ja-JP'),
+                lastActiveAt: new Date().toLocaleString('ja-JP'), // 最終アクティブ時刻
+                status: 'active'
+            };
+
+            users.push(newUser);
+            saveData();
+            displayUsers();
+            updateCounts();
+            updateDashboard();
+            closeUserModal();
+            
+            alert(`ユーザー「${username}」を登録しました！`);
+            addActivity(`新しいユーザー「${username}」が登録されました`);
+        }
+
+        function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            if (confirm(`ユーザー「${user.username}」を削除してもよろしいですか？`)) {
+                users = users.filter(u => u.id !== userId);
+                saveData();
+                displayUsers();
+                updateCounts();
+                updateDashboard();
+                addActivity(`ユーザー「${user.username}」が削除されました`);
+            }
+        }
+
+        function displayUsers() {
+            const tbody = document.getElementById('users-table-body');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">まだユーザーが登録されていません</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>
+                        <div class="user-row">
+                            <div class="user-avatar-small">${user.username.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <strong>${user.username}</strong>
+                                ${user.email ? `<br><small style="color: #7f8c8d;">${user.email}</small>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.registeredAt}</td>
+                    <td><span class="status ${user.status}">${user.status === 'active' ? 'アクティブ' : '無効'}</span></td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteUser(${user.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // お知らせ管理機能
+        function openNewsModal() {
+            // 今日の日付をデフォルトで設定
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('news-date').value = today;
+            document.getElementById('news-modal').style.display = 'block';
+        }
+
+        function closeNewsModal() {
+            document.getElementById('news-modal').style.display = 'none';
+            document.getElementById('news-form').reset();
+        }
+
+        function addNews() {
+            const title = document.getElementById('news-title').value.trim();
+            const date = document.getElementById('news-date').value;
+            const content = document.getElementById('news-content').value.trim();
+            const status = document.getElementById('news-status').value;
+
+            if (!title || !date || !content) {
+                alert('すべての必須項目を入力してください');
+                return;
+            }
+
+            const newNews = {
+                id: newsIdCounter++,
+                title: title,
+                date: date,
+                content: content,
+                status: status,
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+
+            news.unshift(newNews); // 新しいお知らせを配列の先頭に追加（新しい順）
+            
+            // お客さん用サイトのお知らせを更新
+            updateCustomerSiteNews();
+            
+            // データを保存
+            localStorage.setItem('terakoya_news', JSON.stringify(news));
+            localStorage.setItem('terakoya_news_counter', newsIdCounter.toString());
+            
+            // テーブルを更新
+            loadNewsTable();
+            
+            // モーダルを閉じる
+            closeNewsModal();
+            
+            alert('お知らせが作成されました');
+        }
+
+        function updateCustomerSiteNews() {
+            // 公開されたお知らせのみを取得
+            const publishedNews = news.filter(item => item.status === 'published');
+            
+            // お客さん用サイトのお知らせデータとして保存
+            localStorage.setItem('terakoya_customer_news', JSON.stringify(publishedNews));
+        }
+
+        function loadNewsTable() {
+            const tableBody = document.getElementById('news-table-body');
+            
+            if (news.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6c757d; padding: 40px;">お知らせがありません</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = news.map(item => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 500; color: #2c3e50;">${item.title}</div>
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px;">作成: ${item.createdAt}</div>
+                    </td>
+                    <td>${formatDate(item.date)}</td>
+                    <td>
+                        <span class="status-badge ${item.status === 'published' ? 'status-published' : 'status-draft'}">
+                            ${item.status === 'published' ? '公開中' : '下書き'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="editNews(${item.id})" title="編集">✏️</button>
+                            <button class="btn-delete" onclick="deleteNews(${item.id})" title="削除">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function editNews(id) {
+            const newsItem = news.find(item => item.id === id);
+            if (!newsItem) return;
+
+            // フォームに現在の値を設定
+            document.getElementById('news-title').value = newsItem.title;
+            document.getElementById('news-date').value = newsItem.date;
+            document.getElementById('news-content').value = newsItem.content;
+            document.getElementById('news-status').value = newsItem.status;
+
+            // モーダルのタイトルを変更
+            document.querySelector('#news-modal .modal-header h2').textContent = 'お知らせを編集';
+            
+            // フォームsubmit時の処理を変更
+            const form = document.getElementById('news-form');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateNews(id);
+            };
+
+            document.getElementById('news-modal').style.display = 'block';
+        }
+
+        function updateNews(id) {
+            const title = document.getElementById('news-title').value.trim();
+            const date = document.getElementById('news-date').value;
+            const content = document.getElementById('news-content').value.trim();
+            const status = document.getElementById('news-status').value;
+
+            if (!title || !date || !content) {
+                alert('すべての必須項目を入力してください');
+                return;
+            }
+
+            const index = news.findIndex(item => item.id === id);
+            if (index !== -1) {
+                news[index] = {
+                    ...news[index],
+                    title: title,
+                    date: date,
+                    content: content,
+                    status: status,
+                    updatedAt: new Date().toLocaleString('ja-JP')
+                };
+
+                // お客さん用サイトのお知らせを更新
+                updateCustomerSiteNews();
+                
+                // データを保存
+                localStorage.setItem('terakoya_news', JSON.stringify(news));
+                
+                // テーブルを更新
+                loadNewsTable();
+                
+                // フォームを元に戻す
+                resetNewsForm();
+                
+                closeNewsModal();
+                alert('お知らせが更新されました');
+            }
+        }
+
+        function deleteNews(id) {
+            if (confirm('このお知らせを削除しますか？\n※この操作は取り消せません。')) {
+                news = news.filter(item => item.id !== id);
+                
+                // お客さん用サイトのお知らせを更新
+                updateCustomerSiteNews();
+                
+                localStorage.setItem('terakoya_news', JSON.stringify(news));
+                loadNewsTable();
+                alert('お知らせが削除されました');
+            }
+        }
+
+        function resetNewsForm() {
+            // フォームを初期状態に戻す
+            document.querySelector('#news-modal .modal-header h2').textContent = '新規お知らせ作成';
+            const form = document.getElementById('news-form');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                addNews();
+            };
+        }
+
+        // 記事管理機能
+        function openArticleModal() {
+            document.getElementById('article-modal').style.display = 'block';
+        }
+
+        function closeArticleModal() {
+            document.getElementById('article-modal').style.display = 'none';
+            document.getElementById('article-form').reset();
+        }
+
+        function addArticle() {
+            const title = document.getElementById('article-title').value.trim();
+            const category = document.getElementById('article-category').value;
+            const content = document.getElementById('article-content').value.trim();
+            const status = document.getElementById('article-status').value;
+
+            if (!title || !content) {
+                alert('タイトルと記事内容を入力してください');
+                return;
+            }
+
+            const newArticle = {
+                id: articleIdCounter++,
+                title: title,
+                category: category,
+                content: content,
+                status: status,
+                createdAt: new Date().toLocaleString('ja-JP'),
+                author: '管理者'
+            };
+
+            articles.push(newArticle);
+            saveData();
+            displayArticles();
+            updateCounts();
+            updateDashboard();
+            closeArticleModal();
+            
+            alert(`記事「${title}」を作成しました！`);
+            addActivity(`新しい記事「${title}」が${status === 'published' ? '公開' : '下書き保存'}されました`);
+        }
+
+        function deleteArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            if (confirm(`記事「${article.title}」を削除してもよろしいですか？`)) {
+                articles = articles.filter(a => a.id !== articleId);
+                saveData();
+                displayArticles();
+                updateCounts();
+                updateDashboard();
+                addActivity(`記事「${article.title}」が削除されました`);
+            }
+        }
+
+        // 記事編集機能
+        let editingArticleId = null;
+
+        function editArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            editingArticleId = articleId;
+            
+            // フォームに現在の値を設定
+            document.getElementById('edit-article-title').value = article.title;
+            document.getElementById('edit-article-category').value = article.category;
+            document.getElementById('edit-article-content').value = article.content;
+            document.getElementById('edit-article-status').value = article.status;
+            
+            // モーダルを開く
+            document.getElementById('edit-article-modal').style.display = 'block';
+        }
+
+        function closeEditArticleModal() {
+            document.getElementById('edit-article-modal').style.display = 'none';
+            document.getElementById('edit-article-form').reset();
+            editingArticleId = null;
+        }
+
+        function updateArticle() {
+            const title = document.getElementById('edit-article-title').value.trim();
+            const category = document.getElementById('edit-article-category').value;
+            const content = document.getElementById('edit-article-content').value.trim();
+            const status = document.getElementById('edit-article-status').value;
+
+            if (!title || !content) {
+                alert('タイトルと記事内容を入力してください');
+                return;
+            }
+
+            // 記事を更新
+            const articleIndex = articles.findIndex(a => a.id === editingArticleId);
+            if (articleIndex !== -1) {
+                const oldTitle = articles[articleIndex].title;
+                const oldStatus = articles[articleIndex].status;
+                
+                articles[articleIndex] = {
+                    ...articles[articleIndex],
+                    title: title,
+                    category: category,
+                    content: content,
+                    status: status,
+                    updatedAt: new Date().toLocaleString('ja-JP')
+                };
+
+                saveData();
+                displayArticles();
+                updateCounts();
+                updateDashboard();
+                closeEditArticleModal();
+                
+                // ステータス変更の場合は特別な活動ログ
+                if (oldStatus !== status) {
+                    const statusText = status === 'published' ? '公開' : '下書きに変更';
+                    addActivity(`記事「${title}」が${statusText}されました`);
+                } else {
+                    addActivity(`記事「${title}」が更新されました`);
+                }
+                
+                alert(`記事「${title}」を更新しました！`);
+            }
+        }
+
+        function displayArticles() {
+            const tbody = document.getElementById('articles-table-body');
+            
+            if (articles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">まだ記事が作成されていません</td></tr>';
+                return;
+            }
+
+            const categoryNames = {
+                'news': 'お知らせ',
+                'event': 'イベント',
+                'blog': 'ブログ',
+                'activity': '活動報告'
+            };
+
+            tbody.innerHTML = articles.map(article => `
+                <tr>
+                    <td>
+                        <strong>${article.title}</strong><br>
+                        <small style="color: #7f8c8d;">${categoryNames[article.category]}</small>
+                    </td>
+                    <td>${article.createdAt}</td>
+                    <td><span class="status ${article.status === 'published' ? 'active' : 'inactive'}">${article.status === 'published' ? '公開中' : '下書き'}</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="editArticle(${article.id})" style="margin-right: 5px;">編集</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteArticle(${article.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // カウント更新
+        function updateCounts() {
+            document.getElementById('user-count').textContent = users.length;
+            document.getElementById('article-count').textContent = articles.filter(a => a.status === 'published').length;
+            document.getElementById('view-count').textContent = totalViews.toLocaleString();
+            document.getElementById('active-rate').textContent = calculateActiveRate() + '%';
+        }
+
+        // アクティブ率を計算（過去30日間の活動があるユーザーの割合）
+        function calculateActiveRate() {
+            if (users.length === 0) return 0;
+            
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            let activeUsers = 0;
+            
+            users.forEach(user => {
+                // 過去30日間に登録されたユーザーをアクティブとみなす
+                const registrationDate = new Date(user.registeredAt);
+                
+                // 最終アクティブ時刻がある場合はそれも考慮
+                let isActive = false;
+                if (registrationDate >= thirtyDaysAgo) {
+                    isActive = true;
+                }
+                
+                // lastActiveAtがある場合はそれも確認
+                if (!isActive && user.lastActiveAt) {
+                    const lastActiveDate = new Date(user.lastActiveAt);
+                    if (lastActiveDate >= thirtyDaysAgo) {
+                        isActive = true;
+                    }
+                }
+                
+                if (isActive) {
+                    activeUsers++;
+                }
+            });
+            
+            const activeRate = Math.round((activeUsers / users.length) * 100);
+            return Math.min(100, activeRate); // 100%を超えないようにする
+        }
+
+        // 閲覧数を増加
+        function incrementViews(count = 1) {
+            totalViews += count;
+            localStorage.setItem('terakoya_total_views', totalViews.toString());
+            updateCounts();
+        }
+
+        // ダッシュボード更新
+        function updateDashboard() {
+            updateCounts();
+        }
+
+        // 活動履歴
+        let activities = JSON.parse(localStorage.getItem('terakoya_activities')) || [];
+
+        function addActivity(message) {
+            activities.unshift({
+                message: message,
+                timestamp: new Date().toLocaleString('ja-JP')
+            });
+            
+            // 最新10件のみ保持
+            activities = activities.slice(0, 10);
+            localStorage.setItem('terakoya_activities', JSON.stringify(activities));
+            updateRecentActivity();
+        }
+
+        function updateRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<p style="color: #7f8c8d; text-align: center;">まだ活動履歴がありません</p>';
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                    <div style="font-weight: 600; color: #2c3e50;">${activity.message}</div>
+                    <small style="color: #7f8c8d;">${activity.timestamp}</small>
+                </div>
+            `).join('');
+        }
+
+        // データ保存
+        function saveData() {
+            localStorage.setItem('terakoya_users', JSON.stringify(users));
+            localStorage.setItem('terakoya_articles', JSON.stringify(articles));
+            localStorage.setItem('terakoya_user_counter', userIdCounter.toString());
+            localStorage.setItem('terakoya_article_counter', articleIdCounter.toString());
+            localStorage.setItem('terakoya_total_views', totalViews.toString());
+        }
+
+        // 全データリセット機能
+        function resetAllData() {
+            if (confirm('本当に全てのデータをリセットしますか？この操作は取り消すことができません。')) {
+                if (confirm('最終確認：全てのユーザー、記事、活動履歴が削除されます。続行しますか？')) {
+                    // 全てのローカルストレージデータをクリア
+                    localStorage.removeItem('terakoya_users');
+                    localStorage.removeItem('terakoya_articles');
+                    localStorage.removeItem('terakoya_activities');
+                    localStorage.removeItem('terakoya_user_counter');
+                    localStorage.removeItem('terakoya_article_counter');
+                    localStorage.removeItem('terakoya_total_views');
+                    
+                    // 変数を初期化
+                    users = [];
+                    articles = [];
+                    activities = [];
+                    userIdCounter = 1;
+                    articleIdCounter = 1;
+                    totalViews = 0;
+                    
+                    // 画面を更新
+                    displayUsers();
+                    displayArticles();
+                    updateCounts();
+                    updateDashboard();
+                    updateRecentActivity();
+                    
+                    alert('全てのデータがリセットされました。');
+                }
+            }
+        }
+
+        // フォーム送信イベント
+        document.getElementById('user-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addUser();
+        });
+
+        document.getElementById('news-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addNews();
+        });
+
+        document.getElementById('article-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addArticle();
+        });
+
+        document.getElementById('edit-article-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateArticle();
+        });
+
+        // モーダル外クリックで閉じる
+        window.onclick = function(event) {
+            const userModal = document.getElementById('user-modal');
+            const newsModal = document.getElementById('news-modal');
+            const articleModal = document.getElementById('article-modal');
+            const editArticleModal = document.getElementById('edit-article-modal');
+            
+            if (event.target === userModal) {
+                closeUserModal();
+            }
+            if (event.target === newsModal) {
+                closeNewsModal();
+            }
+            if (event.target === articleModal) {
+                closeArticleModal();
+            }
+            if (event.target === editArticleModal) {
+                closeEditArticleModal();
+            }
+        }
+
+        // セットアップフォームのイベントリスナー
+        document.getElementById('setup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('setup-username').value.trim();
+            const password = document.getElementById('setup-password').value.trim();
+            const passwordConfirm = document.getElementById('setup-password-confirm').value.trim();
+            const email = document.getElementById('setup-email').value.trim();
+            const errorDiv = document.getElementById('setup-error');
+            
+            // バリデーション
+            if (username.length === 0) {
+                errorDiv.textContent = 'ユーザー名を入力してください。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorDiv.textContent = 'パスワードは6文字以上で入力してください。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                errorDiv.textContent = 'パスワードと確認用パスワードが一致しません。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // アカウント作成
+            if (createAdminAccount(username, password, email)) {
+                alert(`管理者アカウント「${username}」が作成されました！\nログイン画面からログインしてください。`);
+                
+                // フォームをクリア
+                document.getElementById('setup-form').reset();
+                errorDiv.style.display = 'none';
+                
+                // ログイン画面に遷移
+                showLoginScreen();
+            }
+        });
+
+        // ログインフォームのイベントリスナー
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('login-error');
+            
+            if (login(username, password)) {
+                // ログイン成功時にダッシュボードを初期化
+                updateDashboard();
+                displayUsers();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+                
+                // フォームをクリア
+                document.getElementById('login-form').reset();
+                errorDiv.style.display = 'none';
+            } else {
+                // ログイン失敗時にエラー表示
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        });
+    </script>
+</body>
+</html>
