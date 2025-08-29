@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>てらこや公式サイト</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>てらこや 管理者ダッシュボード</title>
     <style>
         * {
             margin: 0;
@@ -12,1005 +11,1946 @@
             box-sizing: border-box;
         }
 
-        /* タッチ操作の最適化 */
-        button, a, .nav-menu li {
-            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* スクロールの改善 */
-        html {
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-
         body {
-            font-family: 'Noto Sans JP', sans-serif;
-            line-height: 1.6;
+            font-family: 'Arial', 'Segoe UI', sans-serif;
+            background: #f5f7fa;
             color: #333;
-            background-color: #fef9f3;
+            line-height: 1.6;
         }
 
-        /* ヘッダー・ナビゲーション */
-        header {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-            padding: 1rem 0;
+        /* サイドバー */
+        .sidebar {
             position: fixed;
-            width: 100%;
+            left: 0;
             top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        nav {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-            letter-spacing: 1px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'Noto Sans JP', sans-serif;
-            white-space: nowrap;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            list-style: none;
-            gap: 0.8rem;
-            align-items: flex-start;
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 154, 158, 0.95);
-            padding: 1.5rem 1rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 999;
-            transition: all 0.3s ease;
-        }
-
-        .nav-menu a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
+        .sidebar-header p {
+            color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
-            padding: 0.6rem 1rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            text-align: left;
-            letter-spacing: 0.3px;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
             display: block;
-            width: 100%;
+            padding: 15px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .nav-menu a:hover {
-            background-color: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #3498db;
         }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            margin-left: auto;
-            padding: 0.5rem;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            margin: 3px 0;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-5px, 6px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-5px, -6px);
+        .nav-item i {
+            margin-right: 10px;
+            width: 16px;
         }
 
         /* メインコンテンツ */
-        main {
-            margin-top: 80px;
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #f5f7fa;
         }
 
-        section {
-            padding: 4rem 0;
-            margin: 2rem 0;
+        .top-bar {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .section-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 3px solid #f0f0f0;
+        .top-bar h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            color: #ff6b9d;
-            text-align: center;
-            margin-bottom: 2rem;
-            font-weight: 700;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .hero {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            text-align: center;
-            padding: 6rem 0;
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            color: #fff;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .content-area {
+            padding: 40px;
         }
 
-        .hero p {
-            font-size: 1.5rem;
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-
-        /* 学年別人数表示 */
-        .grade-grid {
+        /* ダッシュボードカード */
+        .dashboard-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
-        .grade-card {
-            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
-            padding: 2rem;
+        .card {
+            background: white;
             border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             transition: transform 0.3s ease;
         }
 
-        .grade-card:hover {
+        .card:hover {
             transform: translateY(-5px);
         }
 
-        .grade-card h3 {
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
-            color: #2d3436;
-            margin-bottom: 1rem;
+            margin-bottom: 15px;
         }
 
-        .grade-card .number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #e17055;
+        .card-icon.users {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
         }
 
-        /* クラブ紹介 */
-        .club-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+        .card-icon.articles {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
         }
 
-        .club-card {
-            background: linear-gradient(135deg, #a29bfe, #fd79a8);
-            color: #fff;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
+        .card-icon.views {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
         }
 
-        .club-card:hover {
-            transform: translateY(-8px);
+        .card-icon.activity {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
         }
 
-        .club-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
         }
 
-        .club-card .member-count {
-            background-color: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            font-weight: 600;
+        .card-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
         }
 
-        /* お知らせ */
-        .news-item {
-            background: #fff;
-            border-left: 5px solid #ff6b9d;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 0 10px 10px 0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .news-date {
-            color: #74b9ff;
-            font-weight: 600;
+        .card-desc {
+            color: #7f8c8d;
             font-size: 0.9rem;
         }
 
-        .news-title {
-            font-size: 1.2rem;
-            margin: 0.5rem 0;
-            color: #2d3436;
+        /* セクション */
+        .section {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
-        /* フッター */
-        footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 4rem;
+        .section-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        .section-header h2 {
+            font-size: 1.3rem;
+        }
 
-        /* レスポンシブデザイン */
+        .section-content {
+            padding: 30px;
+        }
+
+        /* ボタン */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* フォーム */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* テーブル */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* ステータスバッジ */
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* レスポンシブ */
         @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
+            .sidebar {
+                transform: translateX(-100%);
             }
 
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-                padding: 80px 1rem 2rem 1rem;
-                border-radius: 0;
-                transform: none;
-                transition: right 0.3s ease;
-                flex-direction: column;
-                align-items: stretch;
-                justify-content: flex-start;
-                overflow-y: auto;
-                gap: 0.5rem;
+            .main-content {
+                margin-left: 0;
             }
 
-            .nav-menu.active {
-                right: 0;
+            .content-area {
+                padding: 20px;
             }
 
-            .nav-menu li {
-                width: 100%;
+            .top-bar {
+                padding: 15px 20px;
             }
 
-            .nav-menu a {
-                font-size: 1rem;
-                padding: 1rem;
-                width: 100%;
-                text-align: left;
-                border: 2px solid rgba(255,255,255,0.3);
-                border-radius: 10px !important;
-                background: rgba(255,255,255,0.9);
-                color: #2d3436;
-                margin-bottom: 0.5rem;
-            }
-
-            .nav-menu a:hover, .nav-menu a.active {
-                background: linear-gradient(135deg, #e17055, #d63031);
-                color: #fff;
-                border-color: #d63031;
-                transform: none;
-            }
-
-
-            .logo {
-                font-size: 1.6rem;
-            }
-
-            .logo span:first-child {
-                font-size: 1.8rem !important;
-            }
-
-            .hero {
-                padding: 4rem 0;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .section-card {
-                padding: 1.5rem;
-                margin: 1rem 0;
-            }
-
-            .grade-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 1rem;
-            }
-
-            .club-grid {
+            .dashboard-cards {
                 grid-template-columns: 1fr;
-            }
-
-            .events-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #access .section-card > div {
-                grid-template-columns: 1fr;
-                gap: 2rem;
             }
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 15px;
-            }
+        /* モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
 
-            .hero h1 {
-                font-size: 2rem;
-            }
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
 
-            .hero p {
-                font-size: 1rem;
-            }
+        .modal-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-            .section-title {
-                font-size: 1.8rem;
-            }
+        .modal-body {
+            padding: 30px;
+        }
 
-            .section-card {
-                padding: 1rem;
-            }
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-            .grade-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        /* ログイン画面専用スタイル */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fadbd8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <span style="font-size: 2.2rem;">🏫</span>
-                    <span>てらこや</span>
+    <!-- 初期セットアップ画面 -->
+    <div id="setup-container" class="login-container hidden">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏫 てらこや</h1>
+                <p>初期セットアップ - 管理者アカウント作成</p>
+            </div>
+            <div class="error-message" id="setup-error">
+                入力内容に問題があります。
+            </div>
+            <form class="login-form" id="setup-form">
+                <div class="form-group">
+                    <label>管理者ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="setup-username" placeholder="管理者ユーザー名を入力" required>
                 </div>
-                <div class="hamburger" onclick="toggleMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div class="form-group">
+                    <label>パスワード <span style="color: #e74c3c;">*</span></label>
+                    <input type="password" id="setup-password" placeholder="パスワードを入力" required minlength="6">
                 </div>
-                <ul class="nav-menu" id="nav-menu">
-                    <li><a href="#home" onclick="showSection('home'); toggleMenu();">ホーム</a></li>
-                    <li><a href="#students" onclick="showSection('students'); toggleMenu();">年間人数紹介</a></li>
-                    <li><a href="#overview" onclick="showSection('overview'); toggleMenu();">学校の概要</a></li>
-                    <li><a href="#clubs" onclick="showSection('clubs'); toggleMenu();">クラブ紹介</a></li>
-                    <li><a href="#daily" onclick="showSection('daily'); toggleMenu();">一日の流れ</a></li>
-                    <li><a href="#quiz" onclick="showSection('quiz'); toggleMenu();">📚 今日のクイズ</a></li>
-                    <li><a href="#values" onclick="showSection('values'); toggleMenu();">大事にしてること</a></li>
-                    <li><a href="#events" onclick="showSection('events'); toggleMenu();">年間行事</a></li>
-                    <li><a href="#news" onclick="showSection('news'); toggleMenu();">お知らせ</a></li>
-                    <li><a href="#visit" onclick="showSection('visit'); toggleMenu();">見学について</a></li>
-                    <li><a href="#blog" onclick="showSection('blog'); toggleMenu();">ブログ</a></li>
-                    <li><a href="#game" onclick="showSection('game'); toggleMenu();">ゲーム</a></li>
-                    <li><a href="#access" onclick="showSection('access'); toggleMenu();">アクセス情報</a></li>
-                </ul>
-            </nav>
+                <div class="form-group">
+                    <label>パスワード確認 <span style="color: #e74c3c;">*</span></label>
+                    <input type="password" id="setup-password-confirm" placeholder="パスワードを再入力" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>管理者メールアドレス（任意）</label>
+                    <input type="email" id="setup-email" placeholder="メールアドレスを入力（省略可）">
+                </div>
+                <button type="submit" class="login-btn">管理者アカウントを作成</button>
+            </form>
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem;">
+                <strong>注意:</strong> このアカウント情報は大切に保管してください。<br>
+                パスワードは6文字以上で設定してください。<br>
+                メールアドレスは必須ではありませんが、連絡先として記録されます。
+            </div>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <!-- ホーム（トップページ） -->
-        <section id="home" class="section">
-            <div class="hero">
-                <div class="container">
-                    <h1>🌟 ようこそ、てらこやへ！ 🌟</h1>
-                    <p>みんなで学び、みんなで育つ場所</p>
-                </div>
+    <!-- ログイン画面 -->
+    <div id="login-container" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏫 てらこや</h1>
+                <p>管理者ログイン</p>
             </div>
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🏠 てらこやについて</h2>
-                    <p style="text-align: center; font-size: 1.2rem; color: #636e72;">
-                        てらこやは勉強というより自分がやりたいことを思う存分できるところです。<br>
-                        クラブ活動はもちろん、普通に外でスポーツしたりもできます。<br>
-                        新しい友達と出会い、たくさんの経験ができます。✨
-                    </p>
-                </div>
+            <div class="error-message" id="login-error">
+                ユーザー名またはパスワードが間違っています。
             </div>
-        </section>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label>ユーザー名</label>
+                    <input type="text" id="username" placeholder="ユーザー名を入力" required>
+                </div>
+                <div class="form-group">
+                    <label>パスワード</label>
+                    <input type="password" id="password" placeholder="パスワードを入力" required>
+                </div>
+                <button type="submit" class="login-btn">ログイン</button>
+            </form>
+            
+        </div>
+    </div>
 
-        <!-- 年間人数紹介 -->
-        <section id="students" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">📊 2025年度 在籍児童数</h2>
-                    <div class="grade-grid">
-                        <div class="grade-card">
-                            <h3>1年生</h3>
-                            <div class="number">3人</div>
-                        </div>
-                        <div class="grade-card">
-                            <h3>2年生</h3>
-                            <div class="number">4人</div>
-                        </div>
-                        <div class="grade-card">
-                            <h3>3年生</h3>
-                            <div class="number">4人</div>
-                        </div>
-                        <div class="grade-card">
-                            <h3>4年生</h3>
-                            <div class="number">3人</div>
-                        </div>
-                        <div class="grade-card">
-                            <h3>5年生</h3>
-                            <div class="number">6人</div>
-                        </div>
-                        <div class="grade-card">
-                            <h3>6年生</h3>
-                            <div class="number">4人</div>
+    <!-- メイン管理画面（ログイン後に表示） -->
+    <div id="admin-dashboard" class="hidden">
+    <!-- サイドバー -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>🏫 てらこや</h2>
+            <p>管理者ダッシュボード</p>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <i>📊</i> ダッシュボード
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('users')">
+                <i>👥</i> ユーザー管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('news')">
+                <i>📢</i> お知らせ管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('articles')">
+                <i>📝</i> 記事管理
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('settings')">
+                <i>⚙️</i> 設定
+            </a>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <!-- トップバー -->
+        <div class="top-bar">
+            <h1 id="page-title">ダッシュボード</h1>
+            <div class="user-info">
+                <div class="user-avatar">管</div>
+                <span>管理者</span>
+                <button class="logout-btn" onclick="logout()">ログアウト</button>
+            </div>
+        </div>
+
+        <!-- コンテンツエリア -->
+        <div class="content-area">
+            <!-- ダッシュボード概要 -->
+            <div id="dashboard-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-icon users">👥</div>
+                        <h3>登録ユーザー</h3>
+                        <div class="card-number" id="user-count">0</div>
+                        <div class="card-desc">総登録者数</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon articles">📝</div>
+                        <h3>記事数</h3>
+                        <div class="card-number" id="article-count">0</div>
+                        <div class="card-desc">公開済み記事</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon views">👁️</div>
+                        <h3>総閲覧数</h3>
+                        <div class="card-number" id="view-count">0</div>
+                        <div class="card-desc">総ビュー数</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon activity">🔥</div>
+                        <h3>アクティブ率</h3>
+                        <div class="card-number" id="active-rate">0%</div>
+                        <div class="card-desc">過去30日間</div>
+                    </div>
+                </div>
+
+                <!-- 最近の活動 -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📈 最近の活動</h2>
+                    </div>
+                    <div class="section-content">
+                        <div id="recent-activity">
+                            <p style="color: #7f8c8d; text-align: center;">まだ活動履歴がありません</p>
                         </div>
                     </div>
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <p style="font-size: 1.5rem; font-weight: 600; color: #e17055;">
-                            🎉 合計：24人のお友達が一緒に学んでいます！
-                        </p>
+                </div>
+            </div>
+
+            <!-- ユーザー管理セクション -->
+            <div id="users-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>👥 ユーザー管理</h2>
+                        <button class="btn btn-primary" onclick="openUserModal()">
+                            ➕ 新規ユーザー登録
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ユーザー</th>
+                                    <th>登録日</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- ユーザーデータがここに挿入されます -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 学校の概要 -->
-        <section id="overview" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">📋 学校の概要</h2>
-                    <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem; color: #636e72;">
-                        てらこやの基本情報をまとめました。ご入学をお考えの方はぜひご覧ください✨
-                    </p>
-                    
-                    <div style="display: grid; gap: 2rem;">
-                        <!-- 対象・定員 -->
-                        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
-                                👥 対象・定員
-                            </h3>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem;">対象年齢</div>
-                                    <div style="font-size: 1.1rem;">小学１年〜６年</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem;">（縦割り混合クラス）</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem;">定員</div>
-                                    <div style="font-size: 2rem; font-weight: 700;">24名</div>
-                                </div>
+            <!-- お知らせ管理セクション -->
+            <div id="news-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📢 お知らせ管理</h2>
+                        <button class="btn btn-primary" onclick="openNewsModal()">
+                            ➕ 新規お知らせ作成
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>タイトル</th>
+                                    <th>日付</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="news-table-body">
+                                <!-- お知らせデータがここに挿入されます -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 記事管理セクション -->
+            <div id="articles-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📝 記事管理</h2>
+                        <button class="btn btn-success" onclick="openArticleModal()">
+                            ➕ 新規記事作成
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>タイトル</th>
+                                    <th>作成日</th>
+                                    <th>ステータス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="articles-table-body">
+                                <!-- 記事データがここに挿入されます -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設定セクション -->
+            <div id="settings-section" class="content-section" style="display: none;">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>⚙️ システム設定</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>サイトタイトル</label>
+                            <input type="text" value="てらこや公式サイト" id="site-title">
+                        </div>
+                        <div class="form-group">
+                            <label>管理者メールアドレス</label>
+                            <input type="email" value="admin@terakoya.jp" id="admin-email">
+                        </div>
+                        <div class="form-group">
+                            <label>サイト説明</label>
+                            <textarea id="site-description">みんなで学び、みんなで育つ場所</textarea>
+                        </div>
+                        <button class="btn btn-primary">設定を保存</button>
+                        <!-- 管理者管理セクション -->
+                        <div style="margin-top: 30px; padding: 20px; background: #eef6ff; border: 1px solid #d6e9ff; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="color: #1b4f72; margin: 0;">👤 管理者管理</h4>
+                                <button class="btn btn-primary btn-small" onclick="openAdminModal()">➕ 管理者を追加</button>
                             </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ユーザー名</th>
+                                        <th>メール</th>
+                                        <th>作成日</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admins-table-body">
+                                    <!-- 管理者一覧がここに表示されます -->
+                                </tbody>
+                            </table>
                         </div>
-
-                        <!-- 費用 -->
-                        <div style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
-                                💰 費用
-                            </h3>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
-                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">入学金</div>
-                                    <div style="font-size: 1.5rem; font-weight: 700;">50,000円＋税</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
-                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">月謝</div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">40,000円＋税</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.9;">（昼食費込）</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px;">
-                                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">兄弟割引</div>
-                                    <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">10,000円減額</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.9;">兄弟がいる場合</div>
-                                </div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; margin-top: 1.5rem;">
-                                <div style="font-size: 1rem; line-height: 1.6;">
-                                    <strong>💡 月謝の特別制度</strong><br>
-                                    月謝は提供できるものでの支払いも可能です<br>
-                                    （専門分野の講師として、食材や教材の提供、サポートスタッフとしてなど）
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 休み -->
-                        <div style="background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="margin-bottom: 2rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.7rem;">
-                                📅 休日・休み
-                            </h3>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">平日</div>
-                                    <div style="font-size: 1rem;">土・日・祝祭日</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">夏休み</div>
-                                    <div style="font-size: 0.95rem;">7月下旬〜8月末</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">冬休み</div>
-                                    <div style="font-size: 0.95rem;">12月下旬〜1月上旬</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 15px; text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">春休み</div>
-                                    <div style="font-size: 0.95rem;">3月下旬〜4月上旬</div>
-                                </div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin-top: 1.5rem; text-align: center;">
-                                <div style="font-size: 0.95rem;">※ 一般小学校の休みに準じます</div>
-                            </div>
+                        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+                            <h4 style="color: #856404; margin-bottom: 10px;">⚠️ データリセット</h4>
+                            <p style="color: #856404; margin-bottom: 15px;">全てのユーザー、記事、活動履歴を削除します。この操作は取り消すことができません。</p>
+                            <button class="btn btn-danger" onclick="resetAllData()">🗑️ 全データをリセット</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- クラブ紹介 -->
-        <section id="clubs" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🎯 クラブ紹介</h2>
-                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: #636e72;">
-                        クラブは自分が入りたいと思ったら入る、入りたくないと思った人は入らない、自由参加です！✨
-                    </p>
-                    <div class="club-grid">
-                        <div class="club-card">
-                            <h3>🎴 百人一首クラブ</h3>
-                            <div class="member-count">10人参加中</div>
-                            <p>日本の伝統的な百人一首を通して、言葉の美しさや歴史を学びます。みんなで競技かるたにも挑戦しています！</p>
-                        </div>
-                        <div class="club-card">
-                            <h3>🌍 英語クラブ</h3>
-                            <div class="member-count">初級〜上級レベル</div>
-                            <p>英語に触れたい子どもたちのためのクラブです。歌やゲーム、会話練習、読み書きなど、それぞれのレベルに合わせて楽しく英語を学びます。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 一日の流れ -->
-        <section id="daily" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🌅 一日の流れ</h2>
-                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; color: #636e72;">
-                        てらこやでの一日はどんなふうに過ごすのかな？みんなで作る特別な時間です✨
-                    </p>
-                    
-                    <div style="display: grid; gap: 2rem;">
-                        <!-- 朝のミーティング -->
-                        <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); padding: 2.5rem; border-radius: 20px; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 20px; background: #e17055; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">朝</div>
-                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                🌅 朝のミーティング
-                            </h3>
-                            <p style="color: #2d3436; line-height: 1.7; font-size: 1.1rem;">
-                                一日のプランを自分で決めて、デザインし、言葉にし、みなで聴きあい、そして話しあう大切な時間。<br>
-                                みなに聴いてほしいこと、困っていることも、シェアし、話し合う時間です。
-                            </p>
-                        </div>
-
-                        <!-- プランの時間 -->
-                        <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 20px; background: #00b894; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">午前〜午後</div>
-                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                🎯 プランの時間
-                            </h3>
-                            <p style="line-height: 1.7; font-size: 1.1rem; margin-bottom: 1.5rem;">
-                                基本的にやりたいことを選んで決めてやる時間です。
-                            </p>
-                        </div>
-
-                        <!-- 昼食 -->
-                        <div style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 20px; background: #fd79a8; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">お昼</div>
-                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                🍚 昼食
-                            </h3>
-                            <p style="line-height: 1.7; font-size: 1.1rem;">
-                                自分たちで育てた米や野菜をなるべく使った和食中心の料理。<br>
-                                自分たちで収穫し、ときには料理する体験を大切にします。
-                            </p>
-                        </div>
-
-                        <!-- 清掃、さよならミーティング -->
-                        <div style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2.5rem; border-radius: 20px; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 20px; background: #e84393; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">夕方</div>
-                            <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                🧹 清掃・さよならミーティング
-                            </h3>
-                            <p style="line-height: 1.7; font-size: 1.1rem;">
-                                一日を振り返り、文字や言葉にし、聴きあう時間。<br>
-                                一日の中で困ったこと、哀しかったこと、うれしかったことをシェアし、話し合う時間です。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- てらこやで大事にしてること -->
-        <section id="values" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">💎 てらこやで大事にしてること</h2>
-                    <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem; color: #636e72;">
-                        てらこやが大切にしている５つの価値観をご紹介します✨
-                    </p>
-                    
-                    <div style="display: grid; gap: 2.5rem;">
-                        <!-- 主体性の尊重 -->
-                        <div style="background: linear-gradient(135deg, #ff9a9e, #fecfef); padding: 3rem; border-radius: 25px;">
-                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 2rem;">🌟 主体性の尊重</h3>
-                            <p style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">一人一人が尊重され「自分のやりたいことを決めてやる」ことを大切にします。</p>
-                        </div>
-
-                        <!-- 話し合いによる解決 -->
-                        <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); padding: 3rem; border-radius: 25px;">
-                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 2rem;">💬 話し合いによる解決</h3>
-                            <p style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">一日の時間割やプランは話し合いによって決めます。</p>
-                        </div>
-
-                        <!-- 自然とともに暮らす -->
-                        <div style="background: linear-gradient(135deg, #d299c2, #fef9d7); padding: 3rem; border-radius: 25px;">
-                            <h3 style="color: #2d3436; margin-bottom: 1.5rem; font-size: 2rem;">🌿 自然とともに暮らす</h3>
-                            <p style="color: #2d3436; line-height: 1.8; font-size: 1.1rem;">自然と一体となった暮らしをともに過ごします。</p>
-                        </div>
-
-                        <!-- 学びかたを学ぶ -->
-                        <div style="background: linear-gradient(135deg, #89f7fe, #66a6ff); color: #fff; padding: 3rem; border-radius: 25px;">
-                            <h3 style="margin-bottom: 1.5rem; font-size: 2rem;">📚 学びかたを学ぶ</h3>
-                            <p style="line-height: 1.8; font-size: 1.1rem;">やりたいことを実現するために、必要性から学びます。</p>
-                        </div>
-
-                        <!-- 自分自身でいること -->
-                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 3rem; border-radius: 25px;">
-                            <h3 style="margin-bottom: 1.5rem; font-size: 2rem;">🤗 自分自身でいること</h3>
-                            <p style="line-height: 1.8; font-size: 1.1rem;">子どもも大人も自分自身でいられる場を目指します。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 年間行事 -->
-        <section id="events" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🎭 2025年年間行事</h2>
-                    <div class="events-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
-                        <div class="event-card" style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🏕️ キャンプ</h3>
-                        </div>
-                        <div class="event-card" style="background: linear-gradient(135deg, #00cec9, #00b894); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🏊‍♂️ 遠泳</h3>
-                        </div>
-                        <div class="event-card" style="background: linear-gradient(135deg, #55a3ff, #003d82); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🚶‍♂️ 萩往還</h3>
-                        </div>
-                        <div class="event-card" style="background: linear-gradient(135deg, #fd79a8, #e84393); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">✈️ 修学旅行</h3>
-                        </div>
-                        <div class="event-card" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: #fff; padding: 2.5rem; border-radius: 20px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">❄️ 雪山キャンプ</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- お知らせ -->
-        <section id="news" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">📢 お知らせ</h2>
-                    <div id="news-items-container">
-                        <div class="news-item">
-                            <div class="news-date">2025年7月24日</div>
-                            <h3 class="news-title">🏊‍♂️ 遠泳7月24日に行われました</h3>
-                            <p>今年の遠泳が無事に開催されました。みんな一生懸命に泳ぎ、素晴らしい挑戦を見せてくれました！参加者の皆さん、お疲れ様でした。</p>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">2025年7月20日</div>
-                            <h3 class="news-title">🎴 百人一首クラブが8月17日広島チャンピオンズカップに出場します！</h3>
-                            <p>百人一首クラブのメンバーが広島で開催される全国大会「チャンピオンズカップ」に出場します。みんなで応援しましょう！</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 見学について -->
-        <section id="visit" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">👀 見学希望の方へ</h2>
-                    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem;">
-                        てらこやの見学はいつでも大歓迎です！お気軽にお越しください✨
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ブログ -->
-        <section id="blog" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">📝 てらこやブログ</h2>
-                    <div id="blog-content">
-                        <div id="published-posts">
-                            <div style="text-align: center; padding: 3rem; color: #636e72;">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-                                <p style="font-size: 1.2rem;">まだ記事がありません</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ゲーム -->
-        <section id="game" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🎮 じゃんけんゲーム</h2>
-                    <div id="janken-game" style="text-align: center; max-width: 600px; margin: 0 auto;">
-                        <div id="game-result" style="font-size: 1.5rem; margin: 1rem 0; min-height: 50px;"></div>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin: 2rem 0;">
-                            <div id="player-choice" style="font-size: 4rem;">❓</div>
-                            <div>VS</div>
-                            <div id="computer-choice" style="font-size: 4rem;">❓</div>
-                        </div>
-                        <div>
-                            <button onclick="playJanken('rock')" style="font-size: 3rem; padding: 1rem;">✊</button>
-                            <button onclick="playJanken('paper')" style="font-size: 3rem; padding: 1rem;">✋</button>
-                            <button onclick="playJanken('scissors')" style="font-size: 3rem; padding: 1rem;">✌️</button>
-                        </div>
-                        <div style="margin-top: 2rem;">
-                            <h3>📊 スコア</h3>
-                            <div>勝ち: <span id="win-count">0</span></div>
-                            <div>あいこ: <span id="draw-count">0</span></div>
-                            <div>負け: <span id="lose-count">0</span></div>
-                            <button onclick="resetScore()">スコアリセット</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 今日のてらこやクイズ -->
-        <section id="quiz" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">📚 今日のてらこやクイズ</h2>
-                    <div id="quiz-content">
-                        <div class="quiz-container" style="max-width: 600px; margin: 0 auto; text-align: center;">
-                            <div id="quiz-question" style="font-size: 1.3rem; margin-bottom: 2rem;">クイズを読み込み中...</div>
-                            <div id="quiz-options" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;"></div>
-                            <div id="quiz-result" style="font-size: 1.1rem; display: none;"></div>
-                            <div style="margin-top: 2rem;">
-                                <h3>📊 クイズ成績</h3>
-                                <div>正解: <span id="quiz-correct-count">0</span></div>
-                                <div>挑戦: <span id="quiz-total-count">0</span></div>
-                                <button onclick="resetQuizScore()">記録リセット</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- アクセス情報 -->
-        <section id="access" class="section">
-            <div class="container">
-                <div class="section-card">
-                    <h2 class="section-title">🗺️ アクセス情報</h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
-                        <div>
-                            <h3>📍 住所・連絡先</h3>
-                            <p>
-                                オルタナティブスクール　てらこや<br>
-                                〒742-1105　山口県熊毛郡平生町大野北1177<br><br>
-                                📞 TEL: 03-1234-5678<br>
-                                📧 Email: info@terakoya.com
-                            </p>
-                        </div>
-                        <div>
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d423713.64394563984!2d131.57103535!3d33.93436720000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35451726a4c19983%3A0x7a30d670a5585a8f!2z44GT44Oz44Go44Gu44GK44GG44Gh44GI44KTJuOCquODq-OCv-ODiuODhuOCo-ODluOCueOCr-ODvOODq-WcsOeQg-WtkOiIju-8iOOBpuOCieOBk-OChA!5e0!3m2!1sja!2sjp!4v1753485526349!5m2!1sja!2sjp" 
-                                width="100%" 
-                                height="300" 
-                                style="border:0; border-radius: 10px;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
+    </div> <!-- /admin-dashboard -->
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 てらこや公式サイト. All rights reserved. 🌈</p>
+    <!-- ユーザー登録モーダル -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規ユーザー登録</h2>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="user-form">
+                    <div class="form-group">
+                        <label>ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="new-username" placeholder="ユーザー名を入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" id="new-email" placeholder="メールアドレスを入力">
+                    </div>
+                    <div class="form-group">
+                        <label>ユーザータイプ</label>
+                        <select id="user-type">
+                            <option value="student">生徒</option>
+                            <option value="parent">保護者</option>
+                            <option value="staff">スタッフ</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeUserModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">登録</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- 管理者作成モーダル -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1b4f72, #2980b9);">
+                <h2>新規管理者追加</h2>
+                <span class="close" onclick="closeAdminModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="admin-form">
+                    <div class="form-group">
+                        <label>ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="admin-username" placeholder="管理者のユーザー名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" id="admin-email-input" placeholder="メールアドレス（任意）">
+                    </div>
+                    <div class="form-group">
+                        <label>パスワード <span style="color: #e74c3c;">*</span></label>
+                        <input type="password" id="admin-password" placeholder="パスワード（6文字以上）" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>パスワード確認 <span style="color: #e74c3c;">*</span></label>
+                        <input type="password" id="admin-password-confirm" placeholder="パスワードを再入力" required minlength="6">
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeAdminModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">追加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 記事作成モーダル -->
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規記事作成</h2>
+                <span class="close" onclick="closeArticleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="article-form">
+                    <div class="form-group">
+                        <label>記事タイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="article-title" placeholder="記事のタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <select id="article-category">
+                            <option value="news">お知らせ</option>
+                            <option value="event">イベント</option>
+                            <option value="blog">ブログ</option>
+                            <option value="activity">活動報告</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>記事内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="article-content" placeholder="記事の内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="article-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeArticleModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-success">作成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- お知らせ作成モーダル -->
+    <div id="news-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新規お知らせ作成</h2>
+                <span class="close" onclick="closeNewsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="news-form">
+                    <div class="form-group">
+                        <label>お知らせタイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="news-title" placeholder="お知らせのタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>日付 <span style="color: #e74c3c;">*</span></label>
+                        <input type="date" id="news-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>お知らせ内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="news-content" placeholder="お知らせの内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="news-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeNewsModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">作成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 記事編集モーダル -->
+    <div id="edit-article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>記事を編集</h2>
+                <span class="close" onclick="closeEditArticleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="edit-article-form">
+                    <div class="form-group">
+                        <label>記事タイトル <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="edit-article-title" placeholder="記事のタイトルを入力" required>
+                    </div>
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <select id="edit-article-category">
+                            <option value="news">お知らせ</option>
+                            <option value="event">イベント</option>
+                            <option value="blog">ブログ</option>
+                            <option value="activity">活動報告</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>記事内容 <span style="color: #e74c3c;">*</span></label>
+                        <textarea id="edit-article-content" placeholder="記事の内容を入力してください..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="edit-article-status">
+                            <option value="draft">下書き</option>
+                            <option value="published">公開</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeEditArticleModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">更新</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- Basic UI Functions ---
+        // 認証管理
+        let adminCredentials = JSON.parse(localStorage.getItem('terakoya_admin_credentials')) || null; // 旧形式（単一管理者）
+        let adminAccounts = JSON.parse(localStorage.getItem('terakoya_admins')) || []; // 新形式（複数管理者）
+        if (!Array.isArray(adminAccounts)) adminAccounts = [];
+        // 管理者IDカウンタ
+        let adminIdCounter = parseInt(localStorage.getItem('terakoya_admin_counter')) || (adminAccounts.length ? Math.max(...adminAccounts.map(a => a.id || 0)) + 1 : 1);
 
-        function toggleMenu() {
-            const navMenu = document.querySelector('.nav-menu');
-            const hamburger = document.querySelector('.hamburger');
-            navMenu.classList.toggle('active');
-            hamburger.classList.toggle('active');
+        // 旧形式から新形式へ移行（1回のみ）
+        (function migrateAdminIfNeeded() {
+            if (adminAccounts.length === 0 && adminCredentials && adminCredentials.username && adminCredentials.password) {
+                adminAccounts = [{
+                    id: 1,
+                    username: adminCredentials.username,
+                    password: adminCredentials.password,
+                    email: adminCredentials.email || '',
+                    createdAt: adminCredentials.createdAt || new Date().toLocaleString('ja-JP')
+                }];
+                adminIdCounter = 2;
+                localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+                localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            }
+        })();
+
+        let isLoggedIn = localStorage.getItem('terakoya_admin_login') === 'true';
+        let loginSessionStart = parseInt(localStorage.getItem('terakoya_login_session')) || 0;
+        const SESSION_TIMEOUT = 4 * 60 * 60 * 1000; // 4時間
+
+        // 管理者アカウントの初期セットアップが完了しているかチェック
+        function isAdminSetupComplete() {
+            // 新形式（複数管理者）を優先。未移行の旧データにも対応。
+            if (adminAccounts && adminAccounts.length > 0) return true;
+            return adminCredentials !== null && adminCredentials.username && adminCredentials.password;
         }
 
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
+        // ページ読み込み時の認証チェック
+        function checkAuthentication() {
+            const now = Date.now();
+            
+            // 管理者アカウントが未設定の場合はセットアップ画面を表示
+            if (!isAdminSetupComplete()) {
+                showSetupScreen();
+                return false;
+            }
+            
+            // セッションタイムアウトチェック
+            if (isLoggedIn && (now - loginSessionStart > SESSION_TIMEOUT)) {
+                logout();
+                return false;
+            }
+            
+            if (isLoggedIn) {
+                showAdminDashboard();
+                return true;
+            } else {
+                showLoginScreen();
+                return false;
+            }
+        }
+
+        // 管理者アカウント作成処理
+        function createAdminAccount(username, password, email) {
+            // セットアップ時の最初の管理者作成（複数管理者対応）
+            if (adminAccounts.some(a => a.username === username)) {
+                alert('この管理者ユーザー名は既に存在します');
+                return false;
+            }
+            const admin = {
+                id: adminIdCounter++,
+                username: username,
+                password: password,
+                email: email || '',
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+            adminAccounts.push(admin);
+            localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+            localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            // 互換性のため旧ストレージも更新（将来的に削除可）
+            localStorage.setItem('terakoya_admin_credentials', JSON.stringify({ username, password, email: admin.email, createdAt: admin.createdAt }));
+            addActivity('管理者アカウントが作成されました');
+            return true;
+        }
+
+        // ログイン処理
+        function login(username, password) {
+            // 新形式（複数管理者）での認証
+            const matched = (adminAccounts || []).find(a => a.username === username && a.password === password);
+            const ok = !!matched || (adminCredentials && username === adminCredentials.username && password === adminCredentials.password);
+            if (ok) {
+                isLoggedIn = true;
+                loginSessionStart = Date.now();
+                localStorage.setItem('terakoya_admin_login', 'true');
+                localStorage.setItem('terakoya_login_session', loginSessionStart.toString());
+                showAdminDashboard();
+                // ログイン後に一覧を更新
+                updateDashboard();
+                displayUsers();
+                loadNewsTable();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+                displayAdmins();
+                addActivity('管理者がログインしました');
+                return true;
+            }
+            return false;
+        }
+
+        // ログアウト処理
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('terakoya_admin_login');
+            localStorage.removeItem('terakoya_login_session');
+            showLoginScreen();
+            // ページをリロードしてセッション情報をクリア
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+
+        // セットアップ画面表示
+        function showSetupScreen() {
+            document.getElementById('setup-container').classList.remove('hidden');
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        // ログイン画面表示
+        function showLoginScreen() {
+            document.getElementById('setup-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        // 管理画面表示
+        function showAdminDashboard() {
+            document.getElementById('setup-container').classList.add('hidden');
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+        }
+
+        // 管理者アカウントリセット
+        function resetAdminAccount() {
+            if (confirm('管理者アカウントをリセットしますか？\nこの操作により、新しい管理者アカウントを作成し直すことができます。')) {
+                if (confirm('最終確認：現在の管理者アカウントが削除され、ログアウトされます。続行しますか？')) {
+                    // 管理者認証情報をクリア
+                    localStorage.removeItem('terakoya_admin_credentials');
+                    localStorage.removeItem('terakoya_admin_login');
+                    localStorage.removeItem('terakoya_login_session');
+                    localStorage.removeItem('terakoya_admins');
+                    localStorage.removeItem('terakoya_admin_counter');
+                    
+                    adminCredentials = null;
+                    adminAccounts = [];
+                    adminIdCounter = 1;
+                    isLoggedIn = false;
+                    
+                    // セットアップ画面を表示
+                    showSetupScreen();
+                    
+                    addActivity('管理者アカウントがリセットされました');
+                    alert('管理者アカウントがリセットされました。新しいアカウントを作成してください。');
+                }
+            }
+        }
+
+        // データ管理
+        let users = JSON.parse(localStorage.getItem('terakoya_users')) || [];
+        let articles = JSON.parse(localStorage.getItem('terakoya_articles')) || [];
+        let news = JSON.parse(localStorage.getItem('terakoya_news')) || [];
+        let userIdCounter = parseInt(localStorage.getItem('terakoya_user_counter')) || 1;
+        let newsIdCounter = parseInt(localStorage.getItem('terakoya_news_counter')) || 1;
+        let articleIdCounter = parseInt(localStorage.getItem('terakoya_article_counter')) || 1;
+        let totalViews = parseInt(localStorage.getItem('terakoya_total_views')) || 0;
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェックを最初に実行
+            if (checkAuthentication()) {
+                // ログイン済みの場合のみダッシュボード初期化
+                updateDashboard();
+                displayUsers();
+                loadNewsTable();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+                displayAdmins();
+            }
+        });
+
+        // セクション切り替え
+        function showSection(sectionName) {
+            // 全セクションを非表示
+            document.querySelectorAll('.content-section').forEach(section => {
                 section.style.display = 'none';
             });
-            // Show the target section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.style.display = 'block';
-            }
-        }
-
-        // --- Janken Game ---
-        let wins = 0;
-        let draws = 0;
-        let losses = 0;
-
-        function playJanken(playerChoice) {
-            const choices = ['rock', 'paper', 'scissors'];
-            const computerChoice = choices[Math.floor(Math.random() * 3)];
-            const emojis = { 'rock': '✊', 'paper': '✋', 'scissors': '✌️' };
-
-            document.getElementById('player-choice').textContent = emojis[playerChoice];
-            document.getElementById('computer-choice').textContent = emojis[computerChoice];
-
-            let result = '';
-            if (playerChoice === computerChoice) {
-                result = '🤝 あいこです！';
-                draws++;
-                document.getElementById('draw-count').textContent = draws;
-            } else if (
-                (playerChoice === 'rock' && computerChoice === 'scissors') ||
-                (playerChoice === 'paper' && computerChoice === 'rock') ||
-                (playerChoice === 'scissors' && computerChoice === 'paper')
-            ) {
-                result = '🎉 あなたの勝ちです！';
-                wins++;
-                document.getElementById('win-count').textContent = wins;
-            } else {
-                result = '😅 あなたの負けです！';
-                losses++;
-                document.getElementById('lose-count').textContent = losses;
-            }
-            document.getElementById('game-result').textContent = result;
-        }
-
-        function resetScore() {
-            wins = 0;
-            draws = 0;
-            losses = 0;
-            document.getElementById('win-count').textContent = '0';
-            document.getElementById('draw-count').textContent = '0';
-            document.getElementById('lose-count').textContent = '0';
-            document.getElementById('game-result').textContent = '';
-            document.getElementById('player-choice').textContent = '❓';
-            document.getElementById('computer-choice').textContent = '❓';
-        }
-
-        // --- Quiz ---
-        let correctQuizAnswers = 0;
-        let totalQuizAttempts = 0;
-        let currentQuiz = {};
-
-        const quizData = [
-            { question: "てらこやの定員は何人でしょう？", options: ["12人", "24人", "50人"], answer: "24人" },
-            { question: "百人一首クラブの参加人数は何人でしょう？", options: ["5人", "10人", "20人"], answer: "10人" }
-        ];
-
-        function loadQuiz() {
-            currentQuiz = quizData[Math.floor(Math.random() * quizData.length)];
-            document.getElementById('quiz-question').textContent = currentQuiz.question;
-            const optionsContainer = document.getElementById('quiz-options');
-            optionsContainer.innerHTML = '';
-            currentQuiz.options.forEach(option => {
-                const button = document.createElement('button');
-                button.textContent = option;
-                button.onclick = () => checkQuizAnswer(option);
-                optionsContainer.appendChild(button);
+            
+            // ナビゲーションの active 状態をリセット
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
             });
-            document.getElementById('quiz-result').style.display = 'none';
+            
+            // 選択されたセクションを表示
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // ナビゲーションの active 状態を設定
+            event.target.classList.add('active');
+            
+            // ページタイトルを更新
+            const titles = {
+                'dashboard': 'ダッシュボード',
+                'users': 'ユーザー管理',
+                'news': 'お知らせ管理',
+                'articles': '記事管理',
+                'settings': 'システム設定'
+            };
+            document.getElementById('page-title').textContent = titles[sectionName];
         }
 
-        function checkQuizAnswer(selectedOption) {
-            totalQuizAttempts++;
-            const resultDiv = document.getElementById('quiz-result');
-            if (selectedOption === currentQuiz.answer) {
-                correctQuizAnswers++;
-                resultDiv.textContent = '🎉 正解！';
-                resultDiv.style.background = '#d4edda';
-            } else {
-                resultDiv.textContent = `😅 残念！正解は「${currentQuiz.answer}」でした。`;
-                resultDiv.style.background = '#f8d7da';
+        // ユーザー管理機能
+        function openUserModal() {
+            document.getElementById('user-modal').style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('user-modal').style.display = 'none';
+            document.getElementById('user-form').reset();
+        }
+
+        function addUser() {
+            const username = document.getElementById('new-username').value.trim();
+            const email = document.getElementById('new-email').value.trim();
+            const userType = document.getElementById('user-type').value;
+
+            if (!username) {
+                alert('ユーザー名を入力してください');
+                return;
             }
-            resultDiv.style.display = 'block';
-            document.getElementById('quiz-correct-count').textContent = correctQuizAnswers;
-            document.getElementById('quiz-total-count').textContent = totalQuizAttempts;
-            setTimeout(loadQuiz, 2000); // Next quiz after 2 seconds
-        }
-        
-        function resetQuizScore() {
-            correctQuizAnswers = 0;
-            totalQuizAttempts = 0;
-            document.getElementById('quiz-correct-count').textContent = '0';
-            document.getElementById('quiz-total-count').textContent = '0';
-            loadQuiz();
+
+            if (users.some(user => user.username === username)) {
+                alert('このユーザー名は既に使用されています');
+                return;
+            }
+
+            const newUser = {
+                id: userIdCounter++,
+                username: username,
+                email: email,
+                userType: userType,
+                registeredAt: new Date().toLocaleString('ja-JP'),
+                lastActiveAt: new Date().toLocaleString('ja-JP'), // 最終アクティブ時刻
+                status: 'active'
+            };
+
+            users.push(newUser);
+            saveData();
+            displayUsers();
+            updateCounts();
+            updateDashboard();
+            closeUserModal();
+            
+            alert(`ユーザー「${username}」を登録しました！`);
+            addActivity(`新しいユーザー「${username}」が登録されました`);
         }
 
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', function() {
-            showSection('home');
-            loadQuiz();
+        function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            if (confirm(`ユーザー「${user.username}」を削除してもよろしいですか？`)) {
+                users = users.filter(u => u.id !== userId);
+                saveData();
+                displayUsers();
+                updateCounts();
+                updateDashboard();
+                addActivity(`ユーザー「${user.username}」が削除されました`);
+            }
+        }
+
+        function displayUsers() {
+            const tbody = document.getElementById('users-table-body');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">まだユーザーが登録されていません</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>
+                        <div class="user-row">
+                            <div class="user-avatar-small">${user.username.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <strong>${user.username}</strong>
+                                ${user.email ? `<br><small style="color: #7f8c8d;">${user.email}</small>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.registeredAt}</td>
+                    <td><span class="status ${user.status}">${user.status === 'active' ? 'アクティブ' : '無効'}</span></td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteUser(${user.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 管理者管理機能
+        function openAdminModal() {
+            document.getElementById('admin-modal').style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').style.display = 'none';
+            const f = document.getElementById('admin-form');
+            if (f) f.reset();
+        }
+
+        function displayAdmins() {
+            const tbody = document.getElementById('admins-table-body');
+            if (!tbody) return;
+            if (!adminAccounts || adminAccounts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">管理者がまだ登録されていません</td></tr>';
+                return;
+            }
+            tbody.innerHTML = adminAccounts.map(a => `
+                <tr>
+                    <td><strong>${a.username}</strong></td>
+                    <td>${a.email || ''}</td>
+                    <td>${a.createdAt || ''}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteAdmin(${a.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addAdmin() {
+            const username = document.getElementById('admin-username').value.trim();
+            const email = document.getElementById('admin-email-input').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const confirm = document.getElementById('admin-password-confirm').value;
+
+            if (!username) { alert('ユーザー名を入力してください'); return; }
+            if (password.length < 6) { alert('パスワードは6文字以上で入力してください'); return; }
+            if (password !== confirm) { alert('パスワードが一致しません'); return; }
+            if (adminAccounts.some(a => a.username === username)) { alert('この管理者ユーザー名は既に存在します'); return; }
+
+            const admin = {
+                id: adminIdCounter++,
+                username,
+                password,
+                email: email || '',
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+            adminAccounts.push(admin);
+            localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+            localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            displayAdmins();
+            closeAdminModal();
+            addActivity(`新しい管理者「${username}」が追加されました`);
+            alert(`管理者「${username}」を追加しました！`);
+        }
+
+        function deleteAdmin(id) {
+            const admin = (adminAccounts || []).find(a => a.id === id);
+            if (!admin) return;
+            if (adminAccounts.length <= 1) {
+                alert('最後の管理者は削除できません');
+                return;
+            }
+            if (confirm(`管理者「${admin.username}」を削除しますか？`)) {
+                adminAccounts = adminAccounts.filter(a => a.id !== id);
+                localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+                displayAdmins();
+                addActivity(`管理者「${admin.username}」が削除されました`);
+            }
+        }
+
+        // お知らせ管理機能
+        function openNewsModal() {
+            // 今日の日付をデフォルトで設定
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('news-date').value = today;
+            document.getElementById('news-modal').style.display = 'block';
+        }
+
+        function closeNewsModal() {
+            document.getElementById('news-modal').style.display = 'none';
+            document.getElementById('news-form').reset();
+        }
+
+        function addNews() {
+            const title = document.getElementById('news-title').value.trim();
+            const date = document.getElementById('news-date').value;
+            const content = document.getElementById('news-content').value.trim();
+            const status = document.getElementById('news-status').value;
+
+            if (!title || !date || !content) {
+                alert('すべての必須項目を入力してください');
+                return;
+            }
+
+            const newNews = {
+                id: newsIdCounter++,
+                title: title,
+                date: date,
+                content: content,
+                status: status,
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+
+            news.unshift(newNews); // 新しいお知らせを配列の先頭に追加（新しい順）
+            
+            // お客さん用サイトのお知らせを更新
+            updateCustomerSiteNews();
+            
+            // データを保存
+            localStorage.setItem('terakoya_news', JSON.stringify(news));
+            localStorage.setItem('terakoya_news_counter', newsIdCounter.toString());
+            
+            // テーブルを更新
+            loadNewsTable();
+            
+            // モーダルを閉じる
+            closeNewsModal();
+            
+            alert('お知らせが作成されました');
+        }
+
+        function updateCustomerSiteNews() {
+            // 公開されたお知らせのみを取得
+            const publishedNews = news.filter(item => item.status === 'published');
+            
+            // お客さん用サイトのお知らせデータとして保存
+            localStorage.setItem('terakoya_customer_news', JSON.stringify(publishedNews));
+        }
+
+        function loadNewsTable() {
+            const tableBody = document.getElementById('news-table-body');
+            
+            if (news.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6c757d; padding: 40px;">お知らせがありません</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = news.map(item => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 500; color: #2c3e50;">${item.title}</div>
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px;">作成: ${item.createdAt}</div>
+                    </td>
+                    <td>${formatDate(item.date)}</td>
+                    <td>
+                        <span class="status-badge ${item.status === 'published' ? 'status-published' : 'status-draft'}">
+                            ${item.status === 'published' ? '公開中' : '下書き'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="editNews(${item.id})" title="編集">✏️</button>
+                            <button class="btn-delete" onclick="deleteNews(${item.id})" title="削除">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function editNews(id) {
+            const newsItem = news.find(item => item.id === id);
+            if (!newsItem) return;
+
+            // フォームに現在の値を設定
+            document.getElementById('news-title').value = newsItem.title;
+            document.getElementById('news-date').value = newsItem.date;
+            document.getElementById('news-content').value = newsItem.content;
+            document.getElementById('news-status').value = newsItem.status;
+
+            // モーダルのタイトルを変更
+            document.querySelector('#news-modal .modal-header h2').textContent = 'お知らせを編集';
+            
+            // フォームsubmit時の処理を変更
+            const form = document.getElementById('news-form');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateNews(id);
+            };
+
+            document.getElementById('news-modal').style.display = 'block';
+        }
+
+        function updateNews(id) {
+            const title = document.getElementById('news-title').value.trim();
+            const date = document.getElementById('news-date').value;
+            const content = document.getElementById('news-content').value.trim();
+            const status = document.getElementById('news-status').value;
+
+            if (!title || !date || !content) {
+                alert('すべての必須項目を入力してください');
+                return;
+            }
+
+            const index = news.findIndex(item => item.id === id);
+            if (index !== -1) {
+                news[index] = {
+                    ...news[index],
+                    title: title,
+                    date: date,
+                    content: content,
+                    status: status,
+                    updatedAt: new Date().toLocaleString('ja-JP')
+                };
+
+                // お客さん用サイトのお知らせを更新
+                updateCustomerSiteNews();
+                
+                // データを保存
+                localStorage.setItem('terakoya_news', JSON.stringify(news));
+                
+                // テーブルを更新
+                loadNewsTable();
+                
+                // フォームを元に戻す
+                resetNewsForm();
+                
+                closeNewsModal();
+                alert('お知らせが更新されました');
+            }
+        }
+
+        function deleteNews(id) {
+            if (confirm('このお知らせを削除しますか？\n※この操作は取り消せません。')) {
+                news = news.filter(item => item.id !== id);
+                
+                // お客さん用サイトのお知らせを更新
+                updateCustomerSiteNews();
+                
+                localStorage.setItem('terakoya_news', JSON.stringify(news));
+                loadNewsTable();
+                alert('お知らせが削除されました');
+            }
+        }
+
+        function resetNewsForm() {
+            // フォームを初期状態に戻す
+            document.querySelector('#news-modal .modal-header h2').textContent = '新規お知らせ作成';
+            const form = document.getElementById('news-form');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                addNews();
+            };
+        }
+
+        // 記事管理機能
+        function openArticleModal() {
+            document.getElementById('article-modal').style.display = 'block';
+        }
+
+        function closeArticleModal() {
+            document.getElementById('article-modal').style.display = 'none';
+            document.getElementById('article-form').reset();
+        }
+
+        function addArticle() {
+            const title = document.getElementById('article-title').value.trim();
+            const category = document.getElementById('article-category').value;
+            const content = document.getElementById('article-content').value.trim();
+            const status = document.getElementById('article-status').value;
+
+            if (!title || !content) {
+                alert('タイトルと記事内容を入力してください');
+                return;
+            }
+
+            const newArticle = {
+                id: articleIdCounter++,
+                title: title,
+                category: category,
+                content: content,
+                status: status,
+                createdAt: new Date().toLocaleString('ja-JP'),
+                author: '管理者'
+            };
+
+            articles.push(newArticle);
+            saveData();
+            displayArticles();
+            updateCounts();
+            updateDashboard();
+            closeArticleModal();
+            
+            alert(`記事「${title}」を作成しました！`);
+            addActivity(`新しい記事「${title}」が${status === 'published' ? '公開' : '下書き保存'}されました`);
+        }
+
+        function deleteArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            if (confirm(`記事「${article.title}」を削除してもよろしいですか？`)) {
+                articles = articles.filter(a => a.id !== articleId);
+                saveData();
+                displayArticles();
+                updateCounts();
+                updateDashboard();
+                addActivity(`記事「${article.title}」が削除されました`);
+            }
+        }
+
+        // 記事編集機能
+        let editingArticleId = null;
+
+        function editArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            editingArticleId = articleId;
+            
+            // フォームに現在の値を設定
+            document.getElementById('edit-article-title').value = article.title;
+            document.getElementById('edit-article-category').value = article.category;
+            document.getElementById('edit-article-content').value = article.content;
+            document.getElementById('edit-article-status').value = article.status;
+            
+            // モーダルを開く
+            document.getElementById('edit-article-modal').style.display = 'block';
+        }
+
+        function closeEditArticleModal() {
+            document.getElementById('edit-article-modal').style.display = 'none';
+            document.getElementById('edit-article-form').reset();
+            editingArticleId = null;
+        }
+
+        function updateArticle() {
+            const title = document.getElementById('edit-article-title').value.trim();
+            const category = document.getElementById('edit-article-category').value;
+            const content = document.getElementById('edit-article-content').value.trim();
+            const status = document.getElementById('edit-article-status').value;
+
+            if (!title || !content) {
+                alert('タイトルと記事内容を入力してください');
+                return;
+            }
+
+            // 記事を更新
+            const articleIndex = articles.findIndex(a => a.id === editingArticleId);
+            if (articleIndex !== -1) {
+                const oldTitle = articles[articleIndex].title;
+                const oldStatus = articles[articleIndex].status;
+                
+                articles[articleIndex] = {
+                    ...articles[articleIndex],
+                    title: title,
+                    category: category,
+                    content: content,
+                    status: status,
+                    updatedAt: new Date().toLocaleString('ja-JP')
+                };
+
+                saveData();
+                displayArticles();
+                updateCounts();
+                updateDashboard();
+                closeEditArticleModal();
+                
+                // ステータス変更の場合は特別な活動ログ
+                if (oldStatus !== status) {
+                    const statusText = status === 'published' ? '公開' : '下書きに変更';
+                    addActivity(`記事「${title}」が${statusText}されました`);
+                } else {
+                    addActivity(`記事「${title}」が更新されました`);
+                }
+                
+                alert(`記事「${title}」を更新しました！`);
+            }
+        }
+
+        function displayArticles() {
+            const tbody = document.getElementById('articles-table-body');
+            
+            if (articles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">まだ記事が作成されていません</td></tr>';
+                return;
+            }
+
+            const categoryNames = {
+                'news': 'お知らせ',
+                'event': 'イベント',
+                'blog': 'ブログ',
+                'activity': '活動報告'
+            };
+
+            tbody.innerHTML = articles.map(article => `
+                <tr>
+                    <td>
+                        <strong>${article.title}</strong><br>
+                        <small style="color: #7f8c8d;">${categoryNames[article.category]}</small>
+                    </td>
+                    <td>${article.createdAt}</td>
+                    <td><span class="status ${article.status === 'published' ? 'active' : 'inactive'}">${article.status === 'published' ? '公開中' : '下書き'}</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="editArticle(${article.id})" style="margin-right: 5px;">編集</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteArticle(${article.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // カウント更新
+        function updateCounts() {
+            document.getElementById('user-count').textContent = users.length;
+            document.getElementById('article-count').textContent = articles.filter(a => a.status === 'published').length;
+            document.getElementById('view-count').textContent = totalViews.toLocaleString();
+            document.getElementById('active-rate').textContent = calculateActiveRate() + '%';
+        }
+
+        // アクティブ率を計算（過去30日間の活動があるユーザーの割合）
+        function calculateActiveRate() {
+            if (users.length === 0) return 0;
+            
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            let activeUsers = 0;
+            
+            users.forEach(user => {
+                // 過去30日間に登録されたユーザーをアクティブとみなす
+                const registrationDate = new Date(user.registeredAt);
+                
+                // 最終アクティブ時刻がある場合はそれも考慮
+                let isActive = false;
+                if (registrationDate >= thirtyDaysAgo) {
+                    isActive = true;
+                }
+                
+                // lastActiveAtがある場合はそれも確認
+                if (!isActive && user.lastActiveAt) {
+                    const lastActiveDate = new Date(user.lastActiveAt);
+                    if (lastActiveDate >= thirtyDaysAgo) {
+                        isActive = true;
+                    }
+                }
+                
+                if (isActive) {
+                    activeUsers++;
+                }
+            });
+            
+            const activeRate = Math.round((activeUsers / users.length) * 100);
+            return Math.min(100, activeRate); // 100%を超えないようにする
+        }
+
+        // 閲覧数を増加
+        function incrementViews(count = 1) {
+            totalViews += count;
+            localStorage.setItem('terakoya_total_views', totalViews.toString());
+            updateCounts();
+        }
+
+        // ダッシュボード更新
+        function updateDashboard() {
+            updateCounts();
+        }
+
+        // 活動履歴
+        let activities = JSON.parse(localStorage.getItem('terakoya_activities')) || [];
+
+        function addActivity(message) {
+            activities.unshift({
+                message: message,
+                timestamp: new Date().toLocaleString('ja-JP')
+            });
+            
+            // 最新10件のみ保持
+            activities = activities.slice(0, 10);
+            localStorage.setItem('terakoya_activities', JSON.stringify(activities));
+            updateRecentActivity();
+        }
+
+        function updateRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<p style="color: #7f8c8d; text-align: center;">まだ活動履歴がありません</p>';
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                    <div style="font-weight: 600; color: #2c3e50;">${activity.message}</div>
+                    <small style="color: #7f8c8d;">${activity.timestamp}</small>
+                </div>
+            `).join('');
+        }
+
+        // データ保存
+        function saveData() {
+            localStorage.setItem('terakoya_users', JSON.stringify(users));
+            localStorage.setItem('terakoya_articles', JSON.stringify(articles));
+            localStorage.setItem('terakoya_user_counter', userIdCounter.toString());
+            localStorage.setItem('terakoya_article_counter', articleIdCounter.toString());
+            localStorage.setItem('terakoya_total_views', totalViews.toString());
+        }
+
+        // 全データリセット機能
+        function resetAllData() {
+            if (confirm('本当に全てのデータをリセットしますか？この操作は取り消すことができません。')) {
+                if (confirm('最終確認：全てのユーザー、記事、活動履歴が削除されます。続行しますか？')) {
+                    // 全てのローカルストレージデータをクリア
+                    localStorage.removeItem('terakoya_users');
+                    localStorage.removeItem('terakoya_articles');
+                    localStorage.removeItem('terakoya_activities');
+                    localStorage.removeItem('terakoya_user_counter');
+                    localStorage.removeItem('terakoya_article_counter');
+                    localStorage.removeItem('terakoya_total_views');
+                    
+                    // 変数を初期化
+                    users = [];
+                    articles = [];
+                    activities = [];
+                    userIdCounter = 1;
+                    articleIdCounter = 1;
+                    totalViews = 0;
+                    
+                    // 画面を更新
+                    displayUsers();
+                    displayArticles();
+                    updateCounts();
+                    updateDashboard();
+                    updateRecentActivity();
+                    
+                    alert('全てのデータがリセットされました。');
+                }
+            }
+        }
+
+        // フォーム送信イベント
+        document.getElementById('user-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addUser();
+        });
+
+        document.getElementById('admin-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addAdmin();
+        });
+
+        document.getElementById('news-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addNews();
+        });
+
+        document.getElementById('article-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addArticle();
+        });
+
+        document.getElementById('edit-article-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateArticle();
+        });
+
+        // モーダル外クリックで閉じる
+        window.onclick = function(event) {
+            const userModal = document.getElementById('user-modal');
+            const newsModal = document.getElementById('news-modal');
+            const articleModal = document.getElementById('article-modal');
+            const editArticleModal = document.getElementById('edit-article-modal');
+            const adminModal = document.getElementById('admin-modal');
+            
+            if (event.target === userModal) {
+                closeUserModal();
+            }
+            if (event.target === newsModal) {
+                closeNewsModal();
+            }
+            if (event.target === articleModal) {
+                closeArticleModal();
+            }
+            if (event.target === editArticleModal) {
+                closeEditArticleModal();
+            }
+            if (event.target === adminModal) {
+                closeAdminModal();
+            }
+        }
+
+        // セットアップフォームのイベントリスナー
+        document.getElementById('setup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('setup-username').value.trim();
+            const password = document.getElementById('setup-password').value.trim();
+            const passwordConfirm = document.getElementById('setup-password-confirm').value.trim();
+            const email = document.getElementById('setup-email').value.trim();
+            const errorDiv = document.getElementById('setup-error');
+            
+            // バリデーション
+            if (username.length === 0) {
+                errorDiv.textContent = 'ユーザー名を入力してください。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorDiv.textContent = 'パスワードは6文字以上で入力してください。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                errorDiv.textContent = 'パスワードと確認用パスワードが一致しません。';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // アカウント作成
+            if (createAdminAccount(username, password, email)) {
+                alert(`管理者アカウント「${username}」が作成されました！\nログイン画面からログインしてください。`);
+                
+                // フォームをクリア
+                document.getElementById('setup-form').reset();
+                errorDiv.style.display = 'none';
+                
+                // ログイン画面に遷移
+                showLoginScreen();
+            }
+        });
+
+        // ログインフォームのイベントリスナー
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('login-error');
+            
+            if (login(username, password)) {
+                // ログイン成功時にダッシュボードを初期化
+                updateDashboard();
+                displayUsers();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+                
+                // フォームをクリア
+                document.getElementById('login-form').reset();
+                errorDiv.style.display = 'none';
+            } else {
+                // ログイン失敗時にエラー表示
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
         });
     </script>
 </body>
