@@ -578,11 +578,7 @@
                 </div>
                 <button type="submit" class="login-btn">ログイン</button>
             </form>
-            <div style="margin-top: 20px; text-align: center;">
-                <button type="button" onclick="resetAdminAccount()" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">
-                    管理者アカウントをリセット
-                </button>
-            </div>
+            
         </div>
     </div>
 
@@ -770,6 +766,26 @@
                             <textarea id="site-description">みんなで学び、みんなで育つ場所</textarea>
                         </div>
                         <button class="btn btn-primary">設定を保存</button>
+                        <!-- 管理者管理セクション -->
+                        <div style="margin-top: 30px; padding: 20px; background: #eef6ff; border: 1px solid #d6e9ff; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="color: #1b4f72; margin: 0;">👤 管理者管理</h4>
+                                <button class="btn btn-primary btn-small" onclick="openAdminModal()">➕ 管理者を追加</button>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ユーザー名</th>
+                                        <th>メール</th>
+                                        <th>作成日</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admins-table-body">
+                                    <!-- 管理者一覧がここに表示されます -->
+                                </tbody>
+                            </table>
+                        </div>
                         <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
                             <h4 style="color: #856404; margin-bottom: 10px;">⚠️ データリセット</h4>
                             <p style="color: #856404; margin-bottom: 15px;">全てのユーザー、記事、活動履歴を削除します。この操作は取り消すことができません。</p>
@@ -810,6 +826,40 @@
                     <div style="text-align: right; margin-top: 30px;">
                         <button type="button" class="btn" onclick="closeUserModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
                         <button type="submit" class="btn btn-primary">登録</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理者作成モーダル -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1b4f72, #2980b9);">
+                <h2>新規管理者追加</h2>
+                <span class="close" onclick="closeAdminModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="admin-form">
+                    <div class="form-group">
+                        <label>ユーザー名 <span style="color: #e74c3c;">*</span></label>
+                        <input type="text" id="admin-username" placeholder="管理者のユーザー名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" id="admin-email-input" placeholder="メールアドレス（任意）">
+                    </div>
+                    <div class="form-group">
+                        <label>パスワード <span style="color: #e74c3c;">*</span></label>
+                        <input type="password" id="admin-password" placeholder="パスワード（6文字以上）" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>パスワード確認 <span style="color: #e74c3c;">*</span></label>
+                        <input type="password" id="admin-password-confirm" placeholder="パスワードを再入力" required minlength="6">
+                    </div>
+                    <div style="text-align: right; margin-top: 30px;">
+                        <button type="button" class="btn" onclick="closeAdminModal()" style="background: #6c757d; color: white; margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">追加</button>
                     </div>
                 </form>
             </div>
@@ -939,13 +989,36 @@
 
     <script>
         // 認証管理
-        let adminCredentials = JSON.parse(localStorage.getItem('terakoya_admin_credentials')) || null;
+        let adminCredentials = JSON.parse(localStorage.getItem('terakoya_admin_credentials')) || null; // 旧形式（単一管理者）
+        let adminAccounts = JSON.parse(localStorage.getItem('terakoya_admins')) || []; // 新形式（複数管理者）
+        if (!Array.isArray(adminAccounts)) adminAccounts = [];
+        // 管理者IDカウンタ
+        let adminIdCounter = parseInt(localStorage.getItem('terakoya_admin_counter')) || (adminAccounts.length ? Math.max(...adminAccounts.map(a => a.id || 0)) + 1 : 1);
+
+        // 旧形式から新形式へ移行（1回のみ）
+        (function migrateAdminIfNeeded() {
+            if (adminAccounts.length === 0 && adminCredentials && adminCredentials.username && adminCredentials.password) {
+                adminAccounts = [{
+                    id: 1,
+                    username: adminCredentials.username,
+                    password: adminCredentials.password,
+                    email: adminCredentials.email || '',
+                    createdAt: adminCredentials.createdAt || new Date().toLocaleString('ja-JP')
+                }];
+                adminIdCounter = 2;
+                localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+                localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            }
+        })();
+
         let isLoggedIn = localStorage.getItem('terakoya_admin_login') === 'true';
         let loginSessionStart = parseInt(localStorage.getItem('terakoya_login_session')) || 0;
         const SESSION_TIMEOUT = 4 * 60 * 60 * 1000; // 4時間
 
         // 管理者アカウントの初期セットアップが完了しているかチェック
         function isAdminSetupComplete() {
+            // 新形式（複数管理者）を優先。未移行の旧データにも対応。
+            if (adminAccounts && adminAccounts.length > 0) return true;
             return adminCredentials !== null && adminCredentials.username && adminCredentials.password;
         }
 
@@ -976,32 +1049,50 @@
 
         // 管理者アカウント作成処理
         function createAdminAccount(username, password, email) {
-            adminCredentials = {
+            // セットアップ時の最初の管理者作成（複数管理者対応）
+            if (adminAccounts.some(a => a.username === username)) {
+                alert('この管理者ユーザー名は既に存在します');
+                return false;
+            }
+            const admin = {
+                id: adminIdCounter++,
                 username: username,
                 password: password,
                 email: email || '',
                 createdAt: new Date().toLocaleString('ja-JP')
             };
-            
-            localStorage.setItem('terakoya_admin_credentials', JSON.stringify(adminCredentials));
+            adminAccounts.push(admin);
+            localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+            localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            // 互換性のため旧ストレージも更新（将来的に削除可）
+            localStorage.setItem('terakoya_admin_credentials', JSON.stringify({ username, password, email: admin.email, createdAt: admin.createdAt }));
             addActivity('管理者アカウントが作成されました');
             return true;
         }
 
         // ログイン処理
         function login(username, password) {
-            if (adminCredentials && username === adminCredentials.username && password === adminCredentials.password) {
+            // 新形式（複数管理者）での認証
+            const matched = (adminAccounts || []).find(a => a.username === username && a.password === password);
+            const ok = !!matched || (adminCredentials && username === adminCredentials.username && password === adminCredentials.password);
+            if (ok) {
                 isLoggedIn = true;
                 loginSessionStart = Date.now();
                 localStorage.setItem('terakoya_admin_login', 'true');
                 localStorage.setItem('terakoya_login_session', loginSessionStart.toString());
-                
                 showAdminDashboard();
+                // ログイン後に一覧を更新
+                updateDashboard();
+                displayUsers();
+                loadNewsTable();
+                displayArticles();
+                updateCounts();
+                updateRecentActivity();
+                displayAdmins();
                 addActivity('管理者がログインしました');
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
 
         // ログアウト処理
@@ -1045,8 +1136,12 @@
                     localStorage.removeItem('terakoya_admin_credentials');
                     localStorage.removeItem('terakoya_admin_login');
                     localStorage.removeItem('terakoya_login_session');
+                    localStorage.removeItem('terakoya_admins');
+                    localStorage.removeItem('terakoya_admin_counter');
                     
                     adminCredentials = null;
+                    adminAccounts = [];
+                    adminIdCounter = 1;
                     isLoggedIn = false;
                     
                     // セットアップ画面を表示
@@ -1078,6 +1173,7 @@
                 displayArticles();
                 updateCounts();
                 updateRecentActivity();
+                displayAdmins();
             }
         });
 
@@ -1196,6 +1292,78 @@
                     </td>
                 </tr>
             `).join('');
+        }
+
+        // 管理者管理機能
+        function openAdminModal() {
+            document.getElementById('admin-modal').style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').style.display = 'none';
+            const f = document.getElementById('admin-form');
+            if (f) f.reset();
+        }
+
+        function displayAdmins() {
+            const tbody = document.getElementById('admins-table-body');
+            if (!tbody) return;
+            if (!adminAccounts || adminAccounts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #7f8c8d;">管理者がまだ登録されていません</td></tr>';
+                return;
+            }
+            tbody.innerHTML = adminAccounts.map(a => `
+                <tr>
+                    <td><strong>${a.username}</strong></td>
+                    <td>${a.email || ''}</td>
+                    <td>${a.createdAt || ''}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteAdmin(${a.id})">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addAdmin() {
+            const username = document.getElementById('admin-username').value.trim();
+            const email = document.getElementById('admin-email-input').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const confirm = document.getElementById('admin-password-confirm').value;
+
+            if (!username) { alert('ユーザー名を入力してください'); return; }
+            if (password.length < 6) { alert('パスワードは6文字以上で入力してください'); return; }
+            if (password !== confirm) { alert('パスワードが一致しません'); return; }
+            if (adminAccounts.some(a => a.username === username)) { alert('この管理者ユーザー名は既に存在します'); return; }
+
+            const admin = {
+                id: adminIdCounter++,
+                username,
+                password,
+                email: email || '',
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+            adminAccounts.push(admin);
+            localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+            localStorage.setItem('terakoya_admin_counter', adminIdCounter.toString());
+            displayAdmins();
+            closeAdminModal();
+            addActivity(`新しい管理者「${username}」が追加されました`);
+            alert(`管理者「${username}」を追加しました！`);
+        }
+
+        function deleteAdmin(id) {
+            const admin = (adminAccounts || []).find(a => a.id === id);
+            if (!admin) return;
+            if (adminAccounts.length <= 1) {
+                alert('最後の管理者は削除できません');
+                return;
+            }
+            if (confirm(`管理者「${admin.username}」を削除しますか？`)) {
+                adminAccounts = adminAccounts.filter(a => a.id !== id);
+                localStorage.setItem('terakoya_admins', JSON.stringify(adminAccounts));
+                displayAdmins();
+                addActivity(`管理者「${admin.username}」が削除されました`);
+            }
         }
 
         // お知らせ管理機能
@@ -1671,6 +1839,11 @@
             addUser();
         });
 
+        document.getElementById('admin-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addAdmin();
+        });
+
         document.getElementById('news-form').addEventListener('submit', function(e) {
             e.preventDefault();
             addNews();
@@ -1692,6 +1865,7 @@
             const newsModal = document.getElementById('news-modal');
             const articleModal = document.getElementById('article-modal');
             const editArticleModal = document.getElementById('edit-article-modal');
+            const adminModal = document.getElementById('admin-modal');
             
             if (event.target === userModal) {
                 closeUserModal();
@@ -1704,6 +1878,9 @@
             }
             if (event.target === editArticleModal) {
                 closeEditArticleModal();
+            }
+            if (event.target === adminModal) {
+                closeAdminModal();
             }
         }
 
