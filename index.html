@@ -554,6 +554,10 @@
                 パスワードは6文字以上で設定してください。<br>
                 メールアドレスは必須ではありませんが、連絡先として記録されます。
             </div>
+            <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
+                既にアカウントをお持ちの方は
+                <a href="#" onclick="showLoginScreen()" style="color: #2980b9; text-decoration: underline;">こちらからログイン</a>
+            </div>
         </div>
     </div>
 
@@ -578,7 +582,10 @@
                 </div>
                 <button type="submit" class="login-btn">ログイン</button>
             </form>
-            
+            <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
+                初めての方は
+                <a href="#" onclick="showSetupScreen()" style="color: #2980b9; text-decoration: underline;">こちらからアカウント作成</a>
+            </div>
         </div>
     </div>
 
@@ -1164,9 +1171,10 @@
 
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
-            // 認証チェックを最初に実行
-            if (checkAuthentication()) {
-                // ログイン済みの場合のみダッシュボード初期化
+            // 要望に合わせ、初期表示は常に「アカウント作成画面」。
+            // すでにログイン済みの場合のみダッシュボードを表示。
+            if (isLoggedIn) {
+                showAdminDashboard();
                 updateDashboard();
                 displayUsers();
                 loadNewsTable();
@@ -1174,6 +1182,8 @@
                 updateCounts();
                 updateRecentActivity();
                 displayAdmins();
+            } else {
+                showSetupScreen();
             }
         });
 
@@ -1401,8 +1411,7 @@
 
             news.unshift(newNews); // 新しいお知らせを配列の先頭に追加（新しい順）
             
-            // お客さん用サイトのお知らせを更新
-            updateCustomerSiteNews();
+            // 管理者サイトのみ運用のため、顧客サイトへの反映は行いません
             
             // データを保存
             localStorage.setItem('terakoya_news', JSON.stringify(news));
@@ -1417,13 +1426,7 @@
             alert('お知らせが作成されました');
         }
 
-        function updateCustomerSiteNews() {
-            // 公開されたお知らせのみを取得
-            const publishedNews = news.filter(item => item.status === 'published');
-            
-            // お客さん用サイトのお知らせデータとして保存
-            localStorage.setItem('terakoya_customer_news', JSON.stringify(publishedNews));
-        }
+        // 顧客サイト連携は削除（管理者サイト単体運用）
 
         function loadNewsTable() {
             const tableBody = document.getElementById('news-table-body');
@@ -1509,8 +1512,7 @@
                     updatedAt: new Date().toLocaleString('ja-JP')
                 };
 
-                // お客さん用サイトのお知らせを更新
-                updateCustomerSiteNews();
+            // 管理者サイトのみ運用のため、顧客サイトへの反映は行いません
                 
                 // データを保存
                 localStorage.setItem('terakoya_news', JSON.stringify(news));
@@ -1530,8 +1532,7 @@
             if (confirm('このお知らせを削除しますか？\n※この操作は取り消せません。')) {
                 news = news.filter(item => item.id !== id);
                 
-                // お客さん用サイトのお知らせを更新
-                updateCustomerSiteNews();
+            // 管理者サイトのみ運用のため、顧客サイトへの反映は行いません
                 
                 localStorage.setItem('terakoya_news', JSON.stringify(news));
                 loadNewsTable();
