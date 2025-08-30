@@ -520,46 +520,7 @@
     </style>
 </head>
 <body>
-    <!-- 初期セットアップ画面 -->
-    <div id="setup-container" class="login-container hidden">
-        <div class="login-card">
-            <div class="login-header">
-                <h1>🏫 てらこや</h1>
-                <p>初期セットアップ - 管理者アカウント作成</p>
-            </div>
-            <div class="error-message" id="setup-error">
-                入力内容に問題があります。
-            </div>
-            <form class="login-form" id="setup-form">
-                <div class="form-group">
-                    <label>管理者ユーザー名 <span style="color: #e74c3c;">*</span></label>
-                    <input type="text" id="setup-username" placeholder="管理者ユーザー名を入力" required>
-                </div>
-                <div class="form-group">
-                    <label>パスワード <span style="color: #e74c3c;">*</span></label>
-                    <input type="password" id="setup-password" placeholder="パスワードを入力" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>パスワード確認 <span style="color: #e74c3c;">*</span></label>
-                    <input type="password" id="setup-password-confirm" placeholder="パスワードを再入力" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>管理者メールアドレス（任意）</label>
-                    <input type="email" id="setup-email" placeholder="メールアドレスを入力（省略可）">
-                </div>
-                <button type="submit" class="login-btn">管理者アカウントを作成</button>
-            </form>
-            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem;">
-                <strong>注意:</strong> このアカウント情報は大切に保管してください。<br>
-                パスワードは6文字以上で設定してください。<br>
-                メールアドレスは必須ではありませんが、連絡先として記録されます。
-            </div>
-            <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
-                既にアカウントをお持ちの方は
-                <a href="#" onclick="showLoginScreen()" style="color: #2980b9; text-decoration: underline;">こちらからログイン</a>
-            </div>
-        </div>
-    </div>
+    <!-- 初期セットアップ画面は削除（ログインのみ運用） -->
 
     <!-- ログイン画面 -->
     <div id="login-container" class="login-container">
@@ -582,10 +543,7 @@
                 </div>
                 <button type="submit" class="login-btn">ログイン</button>
             </form>
-            <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
-                初めての方は
-                <a href="#" onclick="showSetupScreen()" style="color: #2980b9; text-decoration: underline;">こちらからアカウント作成</a>
-            </div>
+            
         </div>
     </div>
 
@@ -1022,29 +980,18 @@
         let loginSessionStart = parseInt(localStorage.getItem('terakoya_login_session')) || 0;
         const SESSION_TIMEOUT = 4 * 60 * 60 * 1000; // 4時間
 
-        // 管理者アカウントの初期セットアップが完了しているかチェック
+        // 初期セットアップの概念は廃止
         function isAdminSetupComplete() {
-            // 新形式（複数管理者）を優先。未移行の旧データにも対応。
-            if (adminAccounts && adminAccounts.length > 0) return true;
-            return adminCredentials !== null && adminCredentials.username && adminCredentials.password;
+            return true;
         }
 
-        // ページ読み込み時の認証チェック
+        // 認証チェック（セットアップフローは廃止）
         function checkAuthentication() {
             const now = Date.now();
-            
-            // 管理者アカウントが未設定の場合はセットアップ画面を表示
-            if (!isAdminSetupComplete()) {
-                showSetupScreen();
-                return false;
-            }
-            
-            // セッションタイムアウトチェック
             if (isLoggedIn && (now - loginSessionStart > SESSION_TIMEOUT)) {
                 logout();
                 return false;
             }
-            
             if (isLoggedIn) {
                 showAdminDashboard();
                 return true;
@@ -1114,11 +1061,9 @@
             }, 500);
         }
 
-        // セットアップ画面表示
+        // セットアップ画面は廃止
         function showSetupScreen() {
-            document.getElementById('setup-container').classList.remove('hidden');
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('admin-dashboard').classList.add('hidden');
+            // no-op
         }
 
         // ログイン画面表示
@@ -1171,8 +1116,7 @@
 
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
-            // 要望に合わせ、初期表示は常に「アカウント作成画面」。
-            // すでにログイン済みの場合のみダッシュボードを表示。
+            // アカウント作成画面は廃止。未ログイン時はログイン画面を表示。
             if (isLoggedIn) {
                 showAdminDashboard();
                 updateDashboard();
@@ -1183,7 +1127,7 @@
                 updateRecentActivity();
                 displayAdmins();
             } else {
-                showSetupScreen();
+                showLoginScreen();
             }
         });
 
@@ -1885,47 +1829,7 @@
             }
         }
 
-        // セットアップフォームのイベントリスナー
-        document.getElementById('setup-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('setup-username').value.trim();
-            const password = document.getElementById('setup-password').value.trim();
-            const passwordConfirm = document.getElementById('setup-password-confirm').value.trim();
-            const email = document.getElementById('setup-email').value.trim();
-            const errorDiv = document.getElementById('setup-error');
-            
-            // バリデーション
-            if (username.length === 0) {
-                errorDiv.textContent = 'ユーザー名を入力してください。';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            if (password.length < 6) {
-                errorDiv.textContent = 'パスワードは6文字以上で入力してください。';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            if (password !== passwordConfirm) {
-                errorDiv.textContent = 'パスワードと確認用パスワードが一致しません。';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            // アカウント作成
-            if (createAdminAccount(username, password, email)) {
-                alert(`管理者アカウント「${username}」が作成されました！\nログイン画面からログインしてください。`);
-                
-                // フォームをクリア
-                document.getElementById('setup-form').reset();
-                errorDiv.style.display = 'none';
-                
-                // ログイン画面に遷移
-                showLoginScreen();
-            }
-        });
+        // セットアップフォームは廃止
 
         // ログインフォームのイベントリスナー
         document.getElementById('login-form').addEventListener('submit', function(e) {
