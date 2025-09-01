@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ごほうびページ - てらこや公式サイト</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="header-container">
+            <h1 class="site-title">🏫 てらこや公式サイト</h1>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">トップ</a></li>
+                    <li><a href="index.html#events">イベント</a></li>
+                    <li><a href="story.html">ストーリー</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main>
+        <div class="container">
+            <div class="reward-container">
+                <!-- お祝いメッセージ -->
+                <div class="congratulations">
+                    <h1>🎉 おめでとう！3話読破！ 🎉</h1>
+                    <p style="font-size: 1.2rem; margin-bottom: 10px;">
+                        てらちゃんの物語を最後まで読んでくれてありがとう！
+                    </p>
+                    <p style="font-size: 1rem; opacity: 0.9;">
+                        君の心にも、きっと新しい挑戦への勇気が芽生えたはず✨
+                    </p>
+                </div>
+
+                <!-- キャラクターアート -->
+                <div class="card" style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 6rem; margin-bottom: 20px;">
+                        🌟
+                    </div>
+                    <h2 style="color: #ff7b54; margin-bottom: 15px;">
+                        読書マスター認定！
+                    </h2>
+                    <p style="color: #666; line-height: 1.7;">
+                        てらちゃんからの特別なメッセージ：<br>
+                        「最後まで読んでくれてありがとう！<br>
+                        君も僕と同じように、新しいことに挑戦する勇気を持っているよ。<br>
+                        これからも一緒にがんばろうね！」
+                    </p>
+                </div>
+
+                <!-- ダウンロードセクション -->
+                <div class="download-section">
+                    <h2 style="color: #4facfe; margin-bottom: 20px; text-align: center;">
+                        🎁 特別なごほうび
+                    </h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 25px;">
+                        3話完読のごほうびに、特別な壁紙とぬりえをプレゼント！
+                    </p>
+                    
+                    <div class="download-links">
+                        <a href="#" class="download-link" onclick="downloadWallpaper()">
+                            🖼️ てらちゃん壁紙をダウンロード
+                        </a>
+                        <a href="#" class="download-link" onclick="downloadColoring()">
+                            🎨 ぬりえPDFをダウンロード
+                        </a>
+                        <a href="#" class="download-link" onclick="downloadCertificate()">
+                            📜 読書修了証をダウンロード
+                        </a>
+                    </div>
+                    
+                    <div style="margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 15px; text-align: center;">
+                        <h3 style="color: #ff7b54; margin-bottom: 10px;">💡 楽しい使い方</h3>
+                        <ul style="text-align: left; color: #666; max-width: 400px; margin: 0 auto;">
+                            <li>壁紙をスマホやタブレットに設定してみよう</li>
+                            <li>ぬりえを印刷して、好きな色で塗ってみよう</li>
+                            <li>修了証に名前を書いて、お部屋に飾ってみよう</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 統計情報 -->
+                <div class="card" style="text-align: center;">
+                    <h3 style="color: #56c596; margin-bottom: 20px;">📊 君の読書記録</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                        <div style="background: #f8f9ff; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2rem; color: #4facfe;">📚</div>
+                            <div style="font-weight: bold; color: #333;">3話</div>
+                            <div style="font-size: 0.9rem; color: #666;">読破</div>
+                        </div>
+                        <div style="background: #f8f9ff; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2rem; color: #ffc947;">⏱️</div>
+                            <div style="font-weight: bold; color: #333;" id="reading-time">約3分</div>
+                            <div style="font-size: 0.9rem; color: #666;">読書時間</div>
+                        </div>
+                        <div style="background: #f8f9ff; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2rem; color: #56c596;">🏆</div>
+                            <div style="font-weight: bold; color: #333;">100%</div>
+                            <div style="font-size: 0.9rem; color: #666;">達成率</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ナビゲーション -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <a href="story.html" class="btn btn-primary">
+                            📖 もう一度読む
+                        </a>
+                        <a href="index.html" class="btn btn-secondary">
+                            🏠 トップに戻る
+                        </a>
+                    </div>
+                </div>
+
+                <!-- シェア機能 -->
+                <div class="card" style="margin-top: 30px; text-align: center;">
+                    <h3 style="color: #ff7b54; margin-bottom: 15px;">📢 みんなに教えてあげよう</h3>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        ストーリーを読み終えた喜びを家族や友達にも伝えてね！
+                    </p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                        <p style="font-style: italic; color: #333; margin-bottom: 10px;">
+                            「てらこやのてらちゃんストーリー、3話全部読んだよ！<br>
+                            とっても面白かった！みんなも読んでみて！」
+                        </p>
+                        <button onclick="copyMessage()" class="btn btn-success" style="margin-top: 10px;">
+                            📋 メッセージをコピー
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 次回予告 -->
+                <div class="card" style="margin-top: 30px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 style="margin-bottom: 15px;">🔮 お楽しみに！</h3>
+                    <p style="opacity: 0.9; line-height: 1.7;">
+                        てらちゃんの新しい物語が近日登場予定！<br>
+                        今度はどんな冒険が待っているかな？<br>
+                        <br>
+                        <small style="font-size: 0.9rem;">
+                            ※新しいストーリーは不定期で追加されます
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    
+    <script>
+        // ダウンロード機能（デモ用）
+        function downloadWallpaper() {
+            alert('🖼️ てらちゃんの壁紙をダウンロード中...\n\n※これはデモ版です。実際のファイルはダウンロードされません。');
+            
+            // 実際の実装では、ここで実際の画像ファイルをダウンロード
+            // const link = document.createElement('a');
+            // link.href = 'assets/sora-kun-wallpaper.jpg';
+            // link.download = 'sora-kun-wallpaper.jpg';
+            // link.click();
+        }
+
+        function downloadColoring() {
+            alert('🎨 ぬりえPDFをダウンロード中...\n\n※これはデモ版です。実際のファイルはダウンロードされません。');
+            
+            // 実際の実装では、ここで実際のPDFファイルをダウンロード
+            // const link = document.createElement('a');
+            // link.href = 'assets/sora-kun-coloring.pdf';
+            // link.download = 'sora-kun-coloring.pdf';
+            // link.click();
+        }
+
+        function downloadCertificate() {
+            alert('📜 読書修了証をダウンロード中...\n\n※これはデモ版です。実際のファイルはダウンロードされません。');
+            
+            // 実際の実装では、ここで修了証PDFを生成・ダウンロード
+            // const link = document.createElement('a');
+            // link.href = 'assets/reading-certificate.pdf';
+            // link.download = 'reading-certificate.pdf';
+            // link.click();
+        }
+
+        // メッセージコピー機能
+        function copyMessage() {
+            const message = "てらこやのてらちゃんストーリー、3話全部読んだよ！とっても面白かった！みんなも読んでみて！";
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(message).then(() => {
+                    alert('📋 メッセージをコピーしました！\nLINEやメールで友達に送ってね！');
+                }).catch(() => {
+                    fallbackCopy(message);
+                });
+            } else {
+                fallbackCopy(message);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('📋 メッセージをコピーしました！\nLINEやメールで友達に送ってね！');
+            } catch (err) {
+                alert('コピーに失敗しました。手動でコピーしてください：\n\n' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 読書時間の計算（デモ用）
+        document.addEventListener('DOMContentLoaded', function() {
+            // 実際の読書開始時刻から計算する場合
+            const readingStartTime = localStorage.getItem('terakoya_reading_start');
+            const readingTimeEl = document.getElementById('reading-time');
+            
+            if (readingStartTime && readingTimeEl) {
+                const startTime = new Date(readingStartTime);
+                const currentTime = new Date();
+                const diffMinutes = Math.ceil((currentTime - startTime) / (1000 * 60));
+                
+                if (diffMinutes > 0) {
+                    readingTimeEl.textContent = `約${diffMinutes}分`;
+                }
+            }
+            
+            // 読書開始時刻を記録（初回のみ）
+            if (!readingStartTime) {
+                localStorage.setItem('terakoya_reading_start', new Date().toISOString());
+            }
+        });
+    </script>
+</body>
+</html>

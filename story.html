@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストーリー - てらこや公式サイト</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="header-container">
+            <h1 class="site-title">🏫 てらこや公式サイト</h1>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">トップ</a></li>
+                    <li><a href="index.html#events">イベント</a></li>
+                    <li><a href="story.html" class="active">ストーリー</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main>
+        <div class="container">
+            <div class="story-container">
+                <!-- ストーリーヘッダー -->
+                <div class="card" style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #ff7b54; font-size: 2rem; margin-bottom: 15px;">
+                        ✨ てらこやストーリーモード ✨
+                    </h1>
+                    <p style="color: #666; font-size: 1.1rem; line-height: 1.6;">
+                        マスコット「てらちゃん」と一緒に<br>
+                        学びと挑戦の物語を読んでみよう！
+                    </p>
+                </div>
+
+                <!-- ストーリー本体 -->
+                <div class="story-episode">
+                    <h2 id="story-title">ストーリーを読み込み中...</h2>
+                    <div id="story-content" class="story-content">
+                        物語を読み込んでいます...
+                    </div>
+                </div>
+
+                <!-- ナビゲーションボタン -->
+                <div class="story-navigation">
+                    <button id="next-story-btn" class="btn btn-primary" style="display: none;">
+                        📖 次の話を読む
+                    </button>
+                    <a href="index.html" id="home-btn" class="btn btn-secondary" style="display: none;">
+                        🏠 トップに戻る
+                    </a>
+                </div>
+
+                <!-- 進行状況 -->
+                <div class="card" style="margin-top: 30px; text-align: center;">
+                    <h3 style="color: #4facfe; margin-bottom: 15px;">📊 読書の進行状況</h3>
+                    <div style="background: #f8f9ff; border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                        <p style="font-size: 1.1rem; font-weight: 500; color: #333;">
+                            全3話のうち <span id="story-progress" style="color: #ff7b54; font-weight: 700;">-</span> 話読了
+                        </p>
+                        <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin: 15px 0;">
+                            <div id="progress-bar" style="width: 0%; height: 100%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 4px; transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem;">
+                        3話すべて読むと特別なごほうびがもらえるよ！
+                    </p>
+                </div>
+
+                <!-- リセットボタン（開発用） -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="resetStoryProgress()" class="btn" style="background: #6c757d; color: white; font-size: 0.8rem; padding: 8px 16px;">
+                        📝 最初から読み直す
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // ストーリーデータ
+        const stories = [
+            {
+                title: "第1話：てらちゃんの新しい挑戦",
+                content: "てらこやのマスコット、てらちゃんは今日も元気いっぱい！\n「今日は新しいことにチャレンジしてみよう！」\nてらちゃんは空を見上げて、大きく深呼吸しました。\n何か素敵な冒険が待っていそうです。"
+            },
+            {
+                title: "第2話：ちょっとした失敗",
+                content: "てらちゃんは紙飛行機作りに挑戦しました。\nでも、なかなかうまく飛びません。\n「あれ？どうしてうまくいかないのかな...」\nちょっぴり落ち込んでしまったてらちゃんでした。"
+            },
+            {
+                title: "第3話：みんなで応援",
+                content: "落ち込むてらちゃんを見て、てらこやのみんなが集まってきました。\n「大丈夫だよ、てらちゃん！一緒にやってみよう！」\nみんなで協力して、ついに素敵な紙飛行機が完成！\n「ありがとう、みんな！」てらちゃんの笑顔が戻りました。"
+            }
+        ];
+
+        // ページ読み込み時に初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStory();
+            updateStoryProgress();
+        });
+
+        function initializeStory() {
+            const currentStoryIndex = getFromStorage('terakoya_story_index', 0);
+            
+            if (currentStoryIndex >= stories.length) {
+                showStoryComplete();
+                return;
+            }
+            
+            displayStory(currentStoryIndex);
+        }
+
+        function displayStory(index) {
+            const story = stories[index];
+            const titleEl = document.getElementById('story-title');
+            const contentEl = document.getElementById('story-content');
+            const nextBtn = document.getElementById('next-story-btn');
+            const homeBtn = document.getElementById('home-btn');
+            
+            if (titleEl && contentEl) {
+                titleEl.textContent = story.title;
+                contentEl.innerHTML = story.content.replace(/\n/g, '<br>');
+            }
+            
+            if (nextBtn) {
+                nextBtn.style.display = index < stories.length - 1 ? 'inline-block' : 'none';
+                nextBtn.onclick = () => nextStory(index);
+            }
+            
+            if (homeBtn) {
+                homeBtn.style.display = 'inline-block';
+            }
+        }
+
+        function nextStory(currentIndex) {
+            const nextIndex = currentIndex + 1;
+            setToStorage('terakoya_story_index', nextIndex);
+            
+            if (nextIndex >= stories.length) {
+                showStoryComplete();
+            } else {
+                displayStory(nextIndex);
+            }
+            updateStoryProgress();
+        }
+
+        function showStoryComplete() {
+            const containerEl = document.querySelector('.story-container');
+            if (!containerEl) return;
+            
+            containerEl.innerHTML = `
+                <div class="story-episode">
+                    <h2>🎉 全部読み終えました！</h2>
+                    <div class="story-content">
+                        素晴らしい！てらちゃんの物語を全部読んでくれてありがとう！<br>
+                        君にも、きっと素敵な冒険が待っています。<br>
+                        <br>
+                        特別なごほうびページに行ってみよう！
+                    </div>
+                    <div class="story-navigation">
+                        <a href="reward.html" class="btn btn-success">ごほうびページへ</a>
+                        <a href="index.html" class="btn btn-secondary">トップに戻る</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetStoryProgress() {
+            setToStorage('terakoya_story_index', 0);
+            location.reload();
+        }
+
+        function updateStoryProgress() {
+            const currentIndex = getFromStorage('terakoya_story_index', 0);
+            const totalStories = 3;
+            const progressEl = document.getElementById('story-progress');
+            const progressBarEl = document.getElementById('progress-bar');
+            
+            if (progressEl) {
+                progressEl.textContent = Math.min(currentIndex, totalStories);
+            }
+            
+            if (progressBarEl) {
+                const progressPercent = Math.min((currentIndex / totalStories) * 100, 100);
+                progressBarEl.style.width = progressPercent + '%';
+            }
+        }
+
+        // ユーティリティ関数
+        function getFromStorage(key, defaultValue) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : defaultValue;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+
+        function setToStorage(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+    </script>
+</body>
+</html>
