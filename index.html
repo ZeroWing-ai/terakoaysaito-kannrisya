@@ -1139,8 +1139,21 @@
             { question: "百人一首クラブの参加人数は何人でしょう？", options: ["5人", "10人", "20人"], answer: "10人" }
         ];
 
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function deterministicIndexForToday(len) {
+            if (!len) return 0;
+            const s = getTodayKey();
+            let h = 0;
+            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+            return h % len;
+        }
+
         function loadQuiz() {
-            currentQuiz = quizData[Math.floor(Math.random() * quizData.length)];
+            if (!quizData || quizData.length === 0) return;
+            currentQuiz = quizData[deterministicIndexForToday(quizData.length)];
             document.getElementById('quiz-question').textContent = currentQuiz.question;
             const optionsContainer = document.getElementById('quiz-options');
             optionsContainer.innerHTML = '';
@@ -1167,7 +1180,7 @@
             resultDiv.style.display = 'block';
             document.getElementById('quiz-correct-count').textContent = correctQuizAnswers;
             document.getElementById('quiz-total-count').textContent = totalQuizAttempts;
-            setTimeout(loadQuiz, 2000); // Next quiz after 2 seconds
+            // 毎日の問題は固定のため、自動で別問題に切り替えません
         }
         
         function resetQuizScore() {
