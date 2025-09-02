@@ -301,6 +301,7 @@
         .add-form .actions { margin-top: .75rem; text-align: right; }
         .btn-primary { background: #6c5ce7; color: #fff; border: 0; border-radius: 8px; padding: .6rem 1rem; cursor: pointer; }
         .btn-secondary { background: #b2bec3; color: #2d3436; border: 0; border-radius: 8px; padding: .6rem 1rem; cursor: pointer; }
+        .btn-danger { background: #e74c3c; color: #fff; border: 0; border-radius: 8px; padding: .4rem .7rem; cursor: pointer; }
 
 
         /* レスポンシブデザイン */
@@ -945,6 +946,7 @@
         const PUBLIC_NEWS_KEY = 'terakoya_public_news';
         const PUBLIC_BLOG_KEY = 'terakoya_public_blog';
         const ADD_PASSWORD = 'terakoya2025';
+        let NEWS_STATIC_HTML = '';
 
         function loadPublicNews() {
             try { return JSON.parse(localStorage.getItem(PUBLIC_NEWS_KEY)) || []; } catch { return []; }
@@ -957,15 +959,26 @@
             const items = loadPublicNews();
             if (!container) return;
             // Render saved items first (newest on top), then keep the static examples below
-            const dynamic = items.map(it => (
+            const dynamic = items.map((it, idx) => (
                 `<div class="news-item">
-                    <div class="news-date">${formatDate(it.date)}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                        <div class="news-date">${formatDate(it.date)}</div>
+                        <button class="btn-danger" onclick="deletePublicNews(${idx})">削除</button>
+                    </div>
                     <h3 class="news-title">${escapeHtml(it.title)}</h3>
                     <p>${escapeHtml(it.content)}</p>
                 </div>`
             )).join('');
-            const staticHtml = container.innerHTML; // existing (two sample items)
-            container.innerHTML = dynamic + staticHtml;
+            container.innerHTML = dynamic + NEWS_STATIC_HTML;
+        }
+        function deletePublicNews(index) {
+            const pw = prompt('削除用パスワードを入力してください');
+            if (pw !== ADD_PASSWORD) { alert('パスワードが違います'); return; }
+            const items = loadPublicNews();
+            if (index < 0 || index >= items.length) return;
+            items.splice(index, 1);
+            savePublicNews(items);
+            renderPublicNews();
         }
         function addPublicNews() {
             const title = document.getElementById('news-title-input').value.trim();
@@ -977,12 +990,7 @@
             const items = loadPublicNews();
             items.unshift({ title, date, content, createdAt: new Date().toISOString() });
             savePublicNews(items);
-            // Prepend to UI
-            const container = document.getElementById('news-items-container');
-            const node = document.createElement('div');
-            node.className = 'news-item';
-            node.innerHTML = `<div class="news-date">${formatDate(date)}</div><h3 class="news-title">${escapeHtml(title)}</h3><p>${escapeHtml(content)}</p>`;
-            container.prepend(node);
+            renderPublicNews();
             clearNewsForm();
             alert('お知らせを追加しました');
         }
@@ -1003,14 +1011,32 @@
             const list = document.getElementById('published-posts');
             const posts = loadBlogPosts();
             if (!list) return;
-            if (posts.length === 0) return; // keep empty message
-            list.innerHTML = posts.map(p => (
+            if (posts.length === 0) {
+                list.innerHTML = `<div style="text-align: center; padding: 3rem; color: #636e72;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                    <p style="font-size: 1.2rem;">まだ記事がありません</p>
+                </div>`;
+                return;
+            }
+            list.innerHTML = posts.map((p, idx) => (
                 `<article class="news-item" style="border-left-color:#6c5ce7">
-                    <div class="news-date">${new Date(p.createdAt || p.date || Date.now()).toLocaleString('ja-JP')}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                        <div class="news-date">${new Date(p.createdAt || p.date || Date.now()).toLocaleString('ja-JP')}</div>
+                        <button class="btn-danger" onclick="deleteBlogPost(${idx})">削除</button>
+                    </div>
                     <h3 class="news-title">${escapeHtml(p.title)}</h3>
                     <p>${escapeHtml(p.content)}</p>
                 </article>`
             )).join('');
+        }
+        function deleteBlogPost(index) {
+            const pw = prompt('削除用パスワードを入力してください');
+            if (pw !== ADD_PASSWORD) { alert('パスワードが違います'); return; }
+            const posts = loadBlogPosts();
+            if (index < 0 || index >= posts.length) return;
+            posts.splice(index, 1);
+            saveBlogPosts(posts);
+            renderBlogPosts();
         }
         function addBlogPost() {
             const title = document.getElementById('blog-title-input').value.trim();
@@ -1160,6 +1186,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             showSection('home');
             // init dates and renders
+            const newsContainer = document.getElementById('news-items-container');
+            if (newsContainer) NEWS_STATIC_HTML = newsContainer.innerHTML;
             const newsDate = document.getElementById('news-date-input');
             if (newsDate) newsDate.value = new Date().toISOString().split('T')[0];
             renderPublicNews();
