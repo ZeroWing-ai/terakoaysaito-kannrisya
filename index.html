@@ -1076,14 +1076,10 @@
         }
 
         function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
-            // Show the target section
+            // すべてのセクションを表示したまま、指定セクションへスクロール
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
-                targetSection.style.display = 'block';
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -1184,7 +1180,10 @@
 
         // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', function() {
-            showSection('home');
+            // 全セクションを可視化（過去の表示状態をリセット）
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = '';
+            });
             // init dates and renders
             const newsContainer = document.getElementById('news-items-container');
             if (newsContainer) NEWS_STATIC_HTML = newsContainer.innerHTML;
